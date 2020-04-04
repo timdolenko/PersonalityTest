@@ -125,6 +125,28 @@ extension QuestionType: Decodable {
 public enum Answer {
     case option(String)
     case number(Int)
+    
+    public var option: String? {
+        get {
+            guard case let .option(value) = self else { return nil }
+            return value
+        }
+        set {
+            guard case .option = self, let newValue = newValue else { return }
+            self = .option(newValue)
+        }
+    }
+    
+    public var number: Int? {
+        get {
+            guard case let .number(value) = self else { return nil }
+            return value
+        }
+        set {
+            guard case .number = self, let newValue = newValue else { return }
+            self = .number(newValue)
+        }
+    }
 }
 
 public class Question: Decodable {

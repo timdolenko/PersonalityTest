@@ -18,6 +18,17 @@ class QuestionaryViewController: UIViewController {
     
     private var viewModel: QuestionaryViewModel!
     
+    private var question: Question? {
+        switch viewModel.state {
+        case let .didDisplay(question):
+            return question
+        case let .didSelectAnswer(question, _):
+            return question
+        default:
+            return nil
+        }
+    }
+    
     private enum Section: Int, CaseIterable {
         case question
         case answer
@@ -56,7 +67,7 @@ class QuestionaryViewController: UIViewController {
         
         case .didSelectAnswer(_, _):
             
-            tableView.reloadSections(IndexSet(Section.answer.rawValue), with: .none)
+            tableView.reloadSections(IndexSet(integer: Section.answer.rawValue), with: .none)
         default:
             break
         }
@@ -85,7 +96,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         
-        guard case let .didDisplay(question, _) = viewModel.state else { return 0 }
+        guard let question = question else { return 0 }
         
         switch section {
         case .question:
@@ -104,7 +115,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         
-        guard case let .didDisplay(question, _) = viewModel.state else { return UITableViewCell() }
+        guard let question = question else { return UITableViewCell() }
         
         switch section {
         case .question:
@@ -151,7 +162,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let section = Section(rawValue: indexPath.section) else { return 0 }
         
-        guard case let .didDisplay(question, _) = viewModel.state else { return 0 }
+        guard let question = question else { return 0 }
         
         switch section {
         case .question:
@@ -193,7 +204,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     
     func sectionMargin(for section: Int) -> CGFloat {
         guard let section = Section(rawValue: section) else { return 0 }
-        guard case .didDisplay(_, _) = viewModel.state else { return 0 }
+        guard let _ = question else { return 0 }
         
         switch section {
         case .question:
@@ -222,7 +233,9 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
         -> CGFloat { sectionMargin(for: section) }
 }
 
+// MARK:  Selected Answers Helpers
 extension QuestionaryViewController {
+    
     func isOptionSelected(_ option: String) -> Bool {
         guard case let .didSelectAnswer(_, answer) = viewModel.state else { return false }
         guard case let .option(text) = answer else { return false }
@@ -233,12 +246,12 @@ extension QuestionaryViewController {
         
         switch viewModel.state {
         case let .didDisplay(question):
-            guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
-            return range.from
+            
+            return question.type.answerType.range?.from ?? 0
         case let .didSelectAnswer(question, answer):
-            guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
-            guard case let .number(number) = answer else { return range.from }
-            return number
+            let range = question.type.answerType.range
+            
+            return answer.number ?? range?.from ?? 0
         default:
             return 0
         }
