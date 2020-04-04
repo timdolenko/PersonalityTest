@@ -145,17 +145,11 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
         case .question:
             
             let minimumCellHeight = QuestionTextCell.height(for: question.title, with: tableView.frame.width)
+            
             let tableViewHeight = tableView.frame.height
-            let answerSectionMargins = sectionMargin(for: indexPath.section) * 2
+            let answerSectionHeight = height(for: Section.answer.rawValue)
             
-            let answerSectionRows = 0..<tableView.numberOfRows(inSection: Section.answer.rawValue)
-            
-            let answerSectionRowsHeight = answerSectionRows
-                .reduce(into: 0) { (result, row) in
-                result += self.tableView(tableView, heightForRowAt: IndexPath(row: row, section: Section.answer.rawValue))
-            }
-            
-            let remainingHeight = tableViewHeight - answerSectionMargins - answerSectionRowsHeight
+            let remainingHeight = tableViewHeight - answerSectionHeight
             
             return max(remainingHeight, minimumCellHeight)
         case .answer:
@@ -170,6 +164,19 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
                 return AnswerRangeCell.height
             }
         }
+    }
+    
+    private func height(for section: Int) -> CGFloat {
+        let sectionMargins = sectionMargin(for: section) * 2
+        
+        let sectionRows = 0..<tableView.numberOfRows(inSection: section)
+        
+        let sectionRowsTotalHeight = sectionRows
+            .reduce(into: CGFloat.zero) { (result, row) in
+            result += self.tableView(tableView, heightForRowAt: IndexPath(row: row, section: section))
+        }
+        
+        return sectionMargins + sectionRowsTotalHeight
     }
     
     func sectionMargin(for section: Int) -> CGFloat {
