@@ -14,14 +14,16 @@ class QuestionaryViewModel {
         case loadingQuestions
         case didDisplay(Question)
         case savingResults
-        case savedResults
+        case didSaveResults
+        case didFailToSaveResults(Error)
     }
     
     enum Event {
         case didRequestQuestions
         case didLoadQuestions
-        case didDisplay(Question)
         case didTapNext(Answer)
+        case didSaveResults
+        case didFailToSaveResults(Error)
     }
     
     var state: State = .initial {
@@ -35,9 +37,11 @@ class QuestionaryViewModel {
     private var questionQueue: [Question] = []
     private var currentQuestionIndex: Int = -1
     private var currentQuestion: Question? {
-        guard currentQuestionIndex > -1
-            && currentQuestionIndex < questionQueue.count else { return nil }
-        return questionQueue[currentQuestionIndex]
+        return questionQueue[safe: currentQuestionIndex]
+    }
+    private var answers: [(Question, Answer)] = []
+    private var currentAnswer: Answer? {
+        return answers[safe: currentQuestionIndex]?.1
     }
     
     private var questions: [Question]?
@@ -78,32 +82,50 @@ class QuestionaryViewModel {
         send(.didLoadQuestions)
     }
     
-    private func requestNextQuestion() -> Question {
+    private func requestNextQuestion() -> Question? {
         
-        if let current = currentQuestion {
-            if let case .
-        }
+        insertConditionQuestionIfNeeded()
         
         currentQuestionIndex += 1
         
-        return questionQueue[currentQuestionIndex]
+        return questionQueue[safe: currentQuestionIndex]
+    }
+    
+    private func insertConditionQuestionIfNeeded() {
+        guard let current = currentQuestion else { return }
+        guard let condition = current.type.condition else { return }
+        guard let answer = currentAnswer else { return }
+        guard let question = condition.nextQuestion(for: answer) else { return }
+        
+        questionQueue.insert(question, at: currentQuestionIndex + 1)
     }
     
     func handle(_ event: Event) {
-        if case .didRequestQuestions = event {
+        
+        switch event {
+        case .didRequestQuestions:
             requestQuestions()
-        }
-        if case .didLoadQuestions = event {
+        case .didLoadQuestions, .didTapNext(_):
             handleSavingResultsIfNeeded()
-        }
-        if case .didTapNext(_) = event {
-            handleSavingResultsIfNeeded()
+        default:
+            break
         }
     }
     
     private func handleSavingResultsIfNeeded() {
         guard case .savingResults = state else { return }
-        // Request saving results
+        MockDataProvider.uploadResultsWithDelaySuccess { [weak self] (result) in
+            DispatchQueue.main.async { [weak self] in
+                guard let `self` = self else { return }
+                
+                switch result {
+                case .success(_):
+                    self.send(.didSaveResults)
+                case let .failure(error):
+                    self.send(.didFailToSaveResults(error))
+                }
+            }
+        }
     }
     
     private func reduce(_ state: State, _ event: Event) -> State {
@@ -112,13 +134,17 @@ class QuestionaryViewModel {
             return .loadingQuestions
         case .didLoadQuestions, .didTapNext(_):
             
-            if currentQuestionIndex == questionQueue.count - 1 {
+            if let nextQuestion = requestNextQuestion() {
+                return .didDisplay(nextQuestion)
+            } else {
                 return .savingResults
             }
+        
+        case .didSaveResults:
+            return .didSaveResults
             
-            return .didDisplay(requestNextQuestion())
-        default:
-            return .initial
+        case let .didFailToSaveResults(error):
+            return .didFailToSaveResults(error)
         }
     }
 }

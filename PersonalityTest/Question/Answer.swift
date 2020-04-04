@@ -8,6 +8,6 @@
 import Foundation
 
 enum Answer {
-    case option(_ index: Int)
-    case number(_ number: Int)
+    case option(String)
+    case number(Int)
 }

@@ -29,4 +29,24 @@ struct MockDataProvider {
             completion(.success(provideQuestions()))
         }
     }
+    
+    static func uploadResultsWithDelaySuccess(
+        _ completion: @escaping (Result<Void,Error>) -> ()
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            completion(.success(()))
+        }
+    }
+    
+    enum FakeError: Error {
+        case corruptData(String)
+    }
+    
+    static func uploadResultsWithDelayError(
+        _ completion: @escaping (Result<Void,Error>) -> ()
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            completion(.failure(FakeError.corruptData("Something went wrong.")))
+        }
+    }
 }
