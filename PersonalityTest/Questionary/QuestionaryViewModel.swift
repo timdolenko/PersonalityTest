@@ -12,7 +12,8 @@ class QuestionaryViewModel {
     enum State {
         case initial
         case loadingQuestions
-        case didDisplay(Question, Answer?)
+        case didDisplay(Question)
+        case didSelectAnswer(Question, Answer)
         case savingResults
         case didSaveResults
         case didFailToSaveResults(Error)
@@ -138,7 +139,7 @@ class QuestionaryViewModel {
         case .didLoadQuestions, .didTapNext:
             
             if let nextQuestion = requestNextQuestion() {
-                return .didDisplay(nextQuestion, answers[nextQuestion])
+                return .didDisplay(nextQuestion)
             } else {
                 return .savingResults
             }
@@ -150,9 +151,8 @@ class QuestionaryViewModel {
             return .didFailToSaveResults(error)
             
         case let .didSelectAnswer(question, answer):
-            
             answers[question] = answer
-            return .didDisplay(question, answers[question])
+            return .didSelectAnswer(question, answer)
         }
     }
 }

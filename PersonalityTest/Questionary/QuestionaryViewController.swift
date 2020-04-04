@@ -49,10 +49,14 @@ class QuestionaryViewController: UIViewController {
             break
         case .loadingQuestions:
             showPopup("Let’s wait for the questions")
-        case .didDisplay(_, _):
+        case .didDisplay(_):
             hidePopupIfNeeded()
             
             tableView.reloadSections(IndexSet(arrayLiteral: 0,1), with: .left)
+        
+        case .didSelectAnswer(_, _):
+            
+            tableView.reloadSections(IndexSet(Section.answer.rawValue), with: .none)
         default:
             break
         }
@@ -220,16 +224,24 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
 
 extension QuestionaryViewController {
     func isOptionSelected(_ option: String) -> Bool {
-        guard case let .didDisplay(_, answer) = viewModel.state else { return false }
+        guard case let .didSelectAnswer(_, answer) = viewModel.state else { return false }
         guard case let .option(text) = answer else { return false }
         return text == option
     }
     
     func selectedValue() -> Int {
-        guard case let .didDisplay(question, answer) = viewModel.state else { return 0 }
-        guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
-        guard case let .number(number) = answer else { return range.from }
-        return number
+        
+        switch viewModel.state {
+        case let .didDisplay(question):
+            guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
+            return range.from
+        case let .didSelectAnswer(question, answer):
+            guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
+            guard case let .number(number) = answer else { return range.from }
+            return number
+        default:
+            return 0
+        }
     }
 }
 

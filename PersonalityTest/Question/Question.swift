@@ -13,18 +13,18 @@ enum QuestionTypeString: String, Codable {
     case numberRange = "number_range"
 }
 
-struct QuestionType {
+public struct QuestionType {
     
-    typealias Options = [String]
+    public typealias Options = [String]
     
-    struct NumberRange: Decodable {
+    public struct NumberRange: Decodable {
         var from: Int
         var to: Int
     }
     
-    struct Condition: Decodable {
+    public struct Condition: Decodable {
         
-        enum Predicate: Decodable {
+        public enum Predicate: Decodable {
             
             enum CodingKeys: String, CodingKey {
                 case exactEquals
@@ -32,7 +32,7 @@ struct QuestionType {
             
             case exactEquals([String])
             
-            init(from decoder: Decoder) throws {
+            public init(from decoder: Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 
                 let predicate = try container.decode([String].self, forKey: .exactEquals)
@@ -46,11 +46,11 @@ struct QuestionType {
             case ifNegative = "if_negative"
         }
         
-        var predicate: Predicate
-        var ifPositive: Question?
-        var ifNegative: Question?
+        public var predicate: Predicate
+        public var ifPositive: Question?
+        public var ifNegative: Question?
         
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
             predicate = try container.decode(Predicate.self, forKey: .predicate)
@@ -59,9 +59,31 @@ struct QuestionType {
         }
     }
     
-    enum AnswerType {
-        case singleChoice(options: [String])
-        case numberRange(range: NumberRange)
+    public enum AnswerType {
+        case singleChoice(Options)
+        case numberRange(NumberRange)
+        
+        public var range: NumberRange? {
+            get {
+                guard case let .numberRange(value) = self else { return nil }
+                return value
+            }
+            set {
+                guard case .numberRange = self, let newValue = newValue else { return }
+                self = .numberRange(newValue)
+            }
+        }
+        
+        public var options: Options? {
+            get {
+                guard case let .singleChoice(value) = self else { return nil }
+                return value
+            }
+            set {
+                guard case .singleChoice = self, let newValue = newValue else { return }
+                self = .singleChoice(newValue)
+            }
+        }
     }
     
     enum CodingKeys: String, CodingKey {
@@ -77,7 +99,7 @@ struct QuestionType {
 }
 
 extension QuestionType: Decodable {
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         typeString = try container.decode(QuestionTypeString.self, forKey: .type)
@@ -87,25 +109,25 @@ extension QuestionType: Decodable {
             
             let options = try container.decode(Options.self, forKey: .options)
         
-            answerType = .singleChoice(options: options)
+            answerType = .singleChoice(options)
             
         case .numberRange:
             
             let range = try container.decode(NumberRange.self, forKey: .range)
             
-            answerType = .numberRange(range: range)
+            answerType = .numberRange(range)
         }
         
         condition = try? container.decode(Condition.self, forKey: .condition)
     }
 }
 
-enum Answer {
+public enum Answer {
     case option(String)
     case number(Int)
 }
 
-class Question: Decodable {
+public class Question: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case question
@@ -117,7 +139,7 @@ class Question: Decodable {
     var category: String
     var type: QuestionType
     
-    required init(from decoder: Decoder) throws {
+    public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         title = try container.decode(String.self, forKey: .question)
@@ -157,11 +179,11 @@ extension QuestionType.Condition {
 }
 
 extension Question: Hashable {
-    static func == (lhs: Question, rhs: Question) -> Bool {
+    public static func == (lhs: Question, rhs: Question) -> Bool {
         lhs.title == rhs.title && lhs.category == rhs.category
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(title)
         hasher.combine(category)
     }
