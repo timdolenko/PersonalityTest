@@ -14,6 +14,7 @@ public class AnswerOptionCell: UITableViewCell {
     
     class var textFont: UIFont { .avenirOfSize(16) }
     class var textHorizontalMargin: CGFloat { 20.0 }
+    class var textVerticalMargin: CGFloat { 12.0 }
     class var checkboxSize: CGFloat { 36.0 }
     class var checkboxRightMargin: CGFloat { 20.0 }
     
@@ -22,7 +23,7 @@ public class AnswerOptionCell: UITableViewCell {
             withConstrainedWidth: width - textHorizontalMargin * 2
                 - checkboxSize - checkboxRightMargin,
             font: textFont
-        )
+        ) + textVerticalMargin * 2
     }
     
     private weak var titleLbl: UILabel!
@@ -47,8 +48,7 @@ public class AnswerOptionCell: UITableViewCell {
         label.snp.makeConstraints { (make) in
             make.left.equalToSuperview()
                 .offset(AnswerOptionCell.textHorizontalMargin)
-            make.top.equalToSuperview().offset(12)
-            make.bottom.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(AnswerOptionCell.textVerticalMargin)
         }
         
         let checkboxImageView = UIImageView()
@@ -61,7 +61,7 @@ public class AnswerOptionCell: UITableViewCell {
             make.size.equalTo(AnswerOptionCell.checkboxSize)
             make.left.equalTo(label.snp.right)
                 .offset(QuestionTextCell.textHorizontalMargin)
-            make.right.equalToSuperview().offset(AnswerOptionCell.checkboxRightMargin)
+            make.right.equalToSuperview().offset(-AnswerOptionCell.checkboxRightMargin)
         }
         
         let button = UIButton()
@@ -69,7 +69,7 @@ public class AnswerOptionCell: UITableViewCell {
         addSubview(button)
         
         button.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview().offset(4)
+            make.edges.equalToSuperview().inset(4)
         }
         
         self.titleLbl = label

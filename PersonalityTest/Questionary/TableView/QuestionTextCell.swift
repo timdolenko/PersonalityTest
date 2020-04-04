@@ -12,9 +12,10 @@ public class QuestionTextCell: UITableViewCell {
     
     class var textFont: UIFont { .avenirOfSize(16) }
     class var textHorizontalMargin: CGFloat { 20.0 }
+    class var textVerticalMargin: CGFloat { 12.0 }
     
     class func height(for questionText: String, with width: CGFloat) -> CGFloat {
-        questionText.height(withConstrainedWidth: width - textHorizontalMargin * 2, font: textFont)
+        questionText.height(withConstrainedWidth: width - textHorizontalMargin * 2, font: textFont) + textVerticalMargin * 2
     }
     
     private weak var titleLbl: UILabel!
@@ -36,9 +37,8 @@ public class QuestionTextCell: UITableViewCell {
             make.left.equalToSuperview()
                 .offset(QuestionTextCell.textHorizontalMargin)
             make.right.equalToSuperview()
-                .offset(QuestionTextCell.textHorizontalMargin)
-            make.top.equalToSuperview().offset(12)
-            make.bottom.equalToSuperview().offset(12)
+                .offset(-QuestionTextCell.textHorizontalMargin)
+            make.top.equalToSuperview().offset(QuestionTextCell.textVerticalMargin)
         }
         
         titleLbl = label
