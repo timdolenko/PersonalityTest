@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func setupCoordinator() {
         let navController = UINavigationController()
-        coordinator = MainCoordinator(navigationController: navController)
+        coordinator = AppCoordinator(navigationController: navController)
         coordinator?.start()
     }
     
