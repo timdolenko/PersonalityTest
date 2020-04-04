@@ -26,7 +26,6 @@ class QuestionaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {

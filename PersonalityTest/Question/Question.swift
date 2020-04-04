@@ -8,26 +8,12 @@
 import Foundation
 
 enum QuestionTypeString: String, Codable {
-    case singleChoice
-    case numberRange
+    case singleChoice = "single_choice"
+    case singleChoiceConditional = "single_choice_conditional"
+    case numberRange = "number_range"
 }
 
 enum QuestionType {
-    
-    case singleChoice(options: [String])
-    case numberRange(range: Question.NumberRange)
-    
-    var typeString: QuestionTypeString {
-        switch self {
-        case .singleChoice(_):
-            return .singleChoice
-        case .numberRange(_):
-            return .numberRange
-        }
-    }
-}
-
-class Question: Decodable {
     
     typealias Options = [String]
     
@@ -36,54 +22,97 @@ class Question: Decodable {
         var to: Int
     }
     
-    enum Category: String, Codable {
-        case hardFact = "hard_fact"
-        case lifestyle
-        case introversion
-        case passion
-    }
-    
-    struct Condition {
+    struct Condition: Decodable {
         
-        enum Predicate {
+        enum Predicate: Decodable {
+            
+            enum CodingKeys: String, CodingKey {
+                case exactEquals
+            }
+            
             case exactEquals([String])
+            
+            init(from decoder: Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                
+                let predicate = try container.decode([String].self, forKey: .exactEquals)
+                self = .exactEquals(predicate)
+            }
+        }
+        
+        enum CodingKeys: String, CodingKey {
+            case predicate
+            case ifPositive = "if_positive"
+            case ifNegative = "if_negative"
         }
         
         var predicate: Predicate
         var ifPositive: Question?
         var ifNegative: Question?
-    }
-
-    struct Description: Decodable {
-        
-        enum CodingKeys: String, CodingKey {
-            case type
-            case options
-            case range
-            case condition
-        }
-        
-        var type: QuestionType
-        var condition: Question.Condition?
         
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             
-            let typeString = try container.decode(QuestionTypeString.self, forKey: .type)
-            
-            switch typeString {
-            case .singleChoice:
-                
-                let options = try container.decode(Options.self, forKey: .options)
-                type = QuestionType.singleChoice(options: options)
-                
-            case .numberRange:
-                
-                let range = try container.decode(NumberRange.self, forKey: .range)
-                type = QuestionType.numberRange(range: range)
-            }
+            predicate = try container.decode(Predicate.self, forKey: .predicate)
+            ifPositive = try? container.decode(Question.self, forKey: .ifPositive)
+            ifNegative = try? container.decode(Question.self, forKey: .ifNegative)
         }
     }
+    
+    enum CodingKeys: String, CodingKey {
+        case type
+        case options
+        case range
+        case condition
+    }
+    
+    // MARK:  Cases
+    case singleChoice(options: [String])
+    case singleChoiceConditional(options: [String], condition: QuestionType.Condition?)
+    case numberRange(range: NumberRange)
+}
+
+extension QuestionType: Decodable {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        let typeString = try container.decode(QuestionTypeString.self, forKey: .type)
+        
+        switch typeString {
+        case .singleChoice:
+            
+            let options = try container.decode(Options.self, forKey: .options)
+        
+            self = .singleChoice(options: options)
+            
+        case .singleChoiceConditional:
+            
+            let options = try container.decode(Options.self, forKey: .options)
+            let condition = try container.decode(Condition.self, forKey: .condition)
+            
+            self = .singleChoiceConditional(options: options, condition: condition)
+            
+        case .numberRange:
+            
+            let range = try container.decode(NumberRange.self, forKey: .range)
+            
+            self = .numberRange(range: range)
+        }
+    }
+    
+    var typeString: QuestionTypeString {
+        switch self {
+        case .singleChoice(_):
+            return .singleChoice
+        case .singleChoiceConditional(options: _, condition: _):
+            return .singleChoiceConditional
+        case .numberRange(_):
+            return .numberRange
+        }
+    }
+}
+
+class Question: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case question
@@ -92,14 +121,14 @@ class Question: Decodable {
     }
     
     var title: String
-    var category: Category
-    var type: Description
+    var category: String
+    var type: QuestionType
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         title = try container.decode(String.self, forKey: .question)
-        category = try container.decode(Category.self, forKey: .category)
-        type = try container.decode(Description.self, forKey: .questionType)
+        category = try container.decode(String.self, forKey: .category)
+        type = try container.decode(QuestionType.self, forKey: .questionType)
     }
 }
