@@ -19,6 +19,7 @@ class PopupView: UIView {
         backgroundColor = .clear
         
         let label = UILabel()
+        label.numberOfLines = 0
         label.textAlignment = .center
         label.font = .avenirOfSize(14)
         label.textColor = UIColor.white.withAlphaComponent(0.8)
@@ -43,9 +44,11 @@ class PopupView: UIView {
         }
         
         label.snp.makeConstraints { (make) in
-            make.width.equalTo(160)
+            make.left.equalToSuperview()
+            make.right.equalToSuperview()
+            make.width.equalTo(200)
             make.height.equalTo(60)
-            make.top.equalTo(indicator).offset(14)
+            make.top.equalTo(indicator.snp.bottom).offset(8)
             make.bottom.equalToSuperview()
         }
         

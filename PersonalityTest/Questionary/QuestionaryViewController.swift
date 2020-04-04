@@ -16,6 +16,13 @@ class QuestionaryViewController: UIViewController {
     
     weak var popup: PopupView?
     
+    private var viewModel: QuestionaryViewModel!
+    
+    required convenience init(viewModel: QuestionaryViewModel) {
+        self.init(nibName: nil, bundle: nil)
+        self.viewModel = viewModel
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,7 +68,11 @@ extension QuestionaryViewController {
         popup.label.text = message
         popup.activityIndicator.startAnimating()
         popup.alpha = 0
-        self.view.addSubview(popup)
+        view.addSubview(popup)
+        popup.snp.makeConstraints { (make) in
+            make.center.equalToSuperview()
+        }
+        view.layoutIfNeeded()
         
         let animator = UIViewPropertyAnimator(duration: 0.25, dampingRatio: 1) { [weak self] in
             guard let `self` = self else { return }
