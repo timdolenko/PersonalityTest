@@ -9,6 +9,11 @@ import UIKit
 
 class QuestionaryViewController: UIViewController {
     
+    weak var titleLbl: UILabel!
+    weak var topBar: UIView!
+    weak var nextBtn: UIButton!
+    weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
