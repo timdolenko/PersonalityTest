@@ -124,12 +124,20 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
                 
                 cell.setOption(selected: isOptionSelected(option))
                 
+                cell.didTap = { [weak self] in
+                    self?.viewModel.send(.didSelectAnswer(question, .option(option)))
+                }
+                
                 return cell
             case let .numberRange(range: range):
                 
                 let cell = tableView.dequeue(AnswerRangeCell.self, at: indexPath)
                 
                 cell.configure(with: AnswerRangeCell.RangeValue(current: selectedValue(), from: range.from, to: range.to))
+                
+                cell.didChangeValue = { [weak self] value in
+                    self?.viewModel.send(.didSelectAnswer(question, .number(value)))
+                }
                 
                 return cell
             }
