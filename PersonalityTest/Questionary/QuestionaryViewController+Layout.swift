@@ -57,7 +57,7 @@ extension QuestionaryViewController {
         self.topBar = topBar
         self.titleLbl = title
         self.tableView = tableView
-        self.nextBtn = nextBtn
+        self.nextButton = nextButton
     }
     
 }
