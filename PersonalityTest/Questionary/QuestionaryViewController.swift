@@ -53,9 +53,9 @@ class QuestionaryViewController: UIViewController {
         
         tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
         
-        tableView.register(
-            QuestionTextCell.self, forCellReuseIdentifier: QuestionTextCell.identifier
-        )
+        tableView.register(QuestionTextCell.self)
+        tableView.register(AnswerOptionCell.self)
+        tableView.register(AnswerOptionCell.self)
     }
     
     @objc func didTapNextButton(_ sender: UIButton) {

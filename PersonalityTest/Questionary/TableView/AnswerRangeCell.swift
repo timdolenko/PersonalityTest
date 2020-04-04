@@ -16,8 +16,6 @@ public class AnswerRangeCell: UITableViewCell {
         var to: Int
     }
     
-    static var identifier: String { String(describing: self) }
-    
     class var height: CGFloat { 92.0 }
     
     private weak var titleLbl: UILabel!
@@ -65,7 +63,7 @@ public class AnswerRangeCell: UITableViewCell {
         super.init(coder: coder)
     }
     
-    public func configure(value: RangeValue) {
+    public func configure(with value: RangeValue) {
         slider.minimumValue = Float(value.from)
         slider.maximumValue = Float(value.to)
         slider.value = Float(value.current)
@@ -79,3 +77,6 @@ public class AnswerRangeCell: UITableViewCell {
         didChangeValue?(Int(slider.value))
     }
 }
+
+// MARK:  Class Identifiable
+extension AnswerRangeCell: ClassIdentifiable {}

@@ -81,7 +81,7 @@ public class AnswerOptionCell: UITableViewCell {
         super.init(coder: coder)
     }
     
-    public func configure(option: String) {
+    public func configure(with option: String) {
         titleLbl.text = option
     }
     
@@ -93,3 +93,6 @@ public class AnswerOptionCell: UITableViewCell {
         didTap?()
     }
 }
+
+// MARK:  Class Identifiable
+extension AnswerOptionCell: ClassIdentifiable {}

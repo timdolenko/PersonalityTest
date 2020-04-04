@@ -10,8 +10,6 @@ import SnapKit
 
 public class QuestionTextCell: UITableViewCell {
     
-    static var identifier: String { String(describing: self) }
-    
     class var textFont: UIFont { .avenirOfSize(16) }
     class var textHorizontalMargin: CGFloat { 20.0 }
     
@@ -54,3 +52,6 @@ public class QuestionTextCell: UITableViewCell {
         titleLbl.text = question
     }
 }
+
+// MARK:  Class Identifiable
+extension QuestionTextCell: ClassIdentifiable {}
