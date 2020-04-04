@@ -21,4 +21,12 @@ struct MockDataProvider {
             fatalError()
         }
     }
+    
+    static func provideQuestionsWithDelay(
+        _ completion: @escaping (Result<QuestionDataResponse,Never>) -> ()
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            completion(.success(provideQuestions()))
+        }
+    }
 }

@@ -13,7 +13,7 @@ enum QuestionTypeString: String, Codable {
     case numberRange = "number_range"
 }
 
-enum QuestionType {
+struct QuestionType {
     
     typealias Options = [String]
     
@@ -59,6 +59,11 @@ enum QuestionType {
         }
     }
     
+    enum AnswerType {
+        case singleChoice(options: [String])
+        case numberRange(range: NumberRange)
+    }
+    
     enum CodingKeys: String, CodingKey {
         case type
         case options
@@ -66,49 +71,32 @@ enum QuestionType {
         case condition
     }
     
-    // MARK:  Cases
-    case singleChoice(options: [String])
-    case singleChoiceConditional(options: [String], condition: QuestionType.Condition?)
-    case numberRange(range: NumberRange)
+    var typeString: QuestionTypeString
+    var type: AnswerType
+    var condition: QuestionType.Condition?
 }
 
 extension QuestionType: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        let typeString = try container.decode(QuestionTypeString.self, forKey: .type)
+        typeString = try container.decode(QuestionTypeString.self, forKey: .type)
         
         switch typeString {
-        case .singleChoice:
+        case .singleChoice, .singleChoiceConditional:
             
             let options = try container.decode(Options.self, forKey: .options)
         
-            self = .singleChoice(options: options)
-            
-        case .singleChoiceConditional:
-            
-            let options = try container.decode(Options.self, forKey: .options)
-            let condition = try container.decode(Condition.self, forKey: .condition)
-            
-            self = .singleChoiceConditional(options: options, condition: condition)
+            type = .singleChoice(options: options)
             
         case .numberRange:
             
             let range = try container.decode(NumberRange.self, forKey: .range)
             
-            self = .numberRange(range: range)
+            type = .numberRange(range: range)
         }
-    }
-    
-    var typeString: QuestionTypeString {
-        switch self {
-        case .singleChoice(_):
-            return .singleChoice
-        case .singleChoiceConditional(options: _, condition: _):
-            return .singleChoiceConditional
-        case .numberRange(_):
-            return .numberRange
-        }
+        
+        condition = try? container.decode(Condition.self, forKey: .condition)
     }
 }
 
