@@ -83,7 +83,7 @@ class QuestionaryViewController: UIViewController {
         
         tableView.register(QuestionTextCell.self)
         tableView.register(AnswerOptionCell.self)
-        tableView.register(AnswerOptionCell.self)
+        tableView.register(AnswerRangeCell.self)
     }
     
     private func updateNextButtonState() {

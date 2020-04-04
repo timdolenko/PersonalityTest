@@ -38,19 +38,18 @@ public class AnswerRangeCell: UITableViewCell {
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(14)
             make.left.equalToSuperview().offset(20)
-            make.right.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
             make.height.equalTo(22)
         }
         
         let slider = UISlider()
-        slider.isContinuous = false
         slider.tintColor = .accentColor
         slider.addTarget(self, action: #selector(didChangeValue(_:)), for: .valueChanged)
         addSubview(slider)
         
         slider.snp.makeConstraints { (make) in
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview()
             make.height.equalTo(44)
         }
@@ -64,6 +63,8 @@ public class AnswerRangeCell: UITableViewCell {
     }
     
     public func configure(with value: RangeValue) {
+        titleLbl.text = String(value.current)
+        
         slider.minimumValue = Float(value.from)
         slider.maximumValue = Float(value.to)
         slider.value = Float(value.current)
@@ -74,7 +75,9 @@ public class AnswerRangeCell: UITableViewCell {
     }
     
     @objc func didChangeValue(_ sender: UIButton) {
-        didChangeValue?(Int(slider.value))
+        let value = Int(slider.value)
+        titleLbl.text = String(value)
+        didChangeValue?(value)
     }
 }
 
