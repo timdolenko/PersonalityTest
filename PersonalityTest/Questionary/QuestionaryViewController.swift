@@ -26,11 +26,25 @@ class QuestionaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        viewModel.bind { [weak self] in
+            self?.viewModelStateDidChange()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        showPopup("Let’s wait for the questions")
+        viewModel.send(.didRequestQuestions)
+    }
+    
+    private func viewModelStateDidChange() {
+        switch viewModel.state {
+        case .initial:
+            break
+        case .loadingQuestions:
+            showPopup("Let’s wait for the questions")
+        default:
+            break
+        }
     }
     
     private func configureTableView() {

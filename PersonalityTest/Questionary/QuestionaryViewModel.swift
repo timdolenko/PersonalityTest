@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct QuestionaryViewModel {
+class QuestionaryViewModel {
     
     enum State {
         case initial
@@ -18,13 +18,31 @@ struct QuestionaryViewModel {
     
     enum Event {
         case didRequestQuestions
-        case didTapNext
+        case didTapNext(answer: Answer)
     }
     
-    var state: State
-    
-    func reduce(_ state: State, _ event: Event) -> State {
-        return .initial
+    var state: State = .initial {
+        didSet {
+            subscriber?()
+        }
     }
     
+    private var subscriber: (() -> ())?
+    
+    func bind(_ subscriber: @escaping () -> ()) {
+        self.subscriber = subscriber
+    }
+    
+    func send(_ event: Event) {
+        state = reduce(state, event)
+    }
+    
+    private func reduce(_ state: State, _ event: Event) -> State {
+        switch event {
+        case .didRequestQuestions:
+            return .loadingQuestions
+        default:
+            return .initial
+        }
+    }
 }

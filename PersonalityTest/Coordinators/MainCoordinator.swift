@@ -17,7 +17,7 @@ class MainCoordinator: Coordinator {
     }
     
     func start() {
-        let controller = QuestionaryViewController()
+        let controller = QuestionaryViewController(viewModel: QuestionaryViewModel())
         navigationController.pushViewController(controller, animated: false)
     }
 }
