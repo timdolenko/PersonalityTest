@@ -27,6 +27,7 @@ class PopupView: UIView {
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
         addSubview(indicator)
         
+        
         indicator.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.size.equalTo(36)
@@ -47,6 +48,10 @@ class PopupView: UIView {
             make.top.equalTo(indicator).offset(14)
             make.bottom.equalToSuperview()
         }
+        
+        self.label = label
+        self.activityIndicator = indicator
+        self.iconImageView = iconImageView
     }
     
     required init?(coder: NSCoder) {

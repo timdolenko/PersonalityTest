@@ -18,10 +18,38 @@ class QuestionaryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showPopup("Let’s wait for the questions")
     }
     
     private func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
         
+        tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
+        
+        tableView.register(
+            QuestionTextCell.self, forCellReuseIdentifier: QuestionTextCell.identifier
+        )
+    }
+    
+    @objc func didTapNextButton(_ sender: UIButton) {
+        
+    }
+}
+
+extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
     }
 }
 

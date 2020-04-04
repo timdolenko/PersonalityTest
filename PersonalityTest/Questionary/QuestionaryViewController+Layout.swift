@@ -40,6 +40,7 @@ extension QuestionaryViewController {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
+            make.height.equalTo(48)
         }
         
         let tableView = UITableView()
@@ -67,6 +68,7 @@ extension QuestionaryViewController {
     
     private func makeTitle() -> UILabel {
         let label = UILabel()
+        label.textColor = .textLightColor
         label.font = .avenirBoldOfSize(20)
         label.text = "Welcome"
         return label
@@ -78,6 +80,8 @@ extension QuestionaryViewController {
         button.titleLabel?.font = .avenirBoldOfSize(20)
         button.titleLabel?.textColor = .white
         button.setTitle("Next", for: .normal)
+        button.addTarget(self, action: #selector(didTapNextButton(_:)), for: .touchUpInside)
+        button.alpha = 0
         return button
     }
 }
