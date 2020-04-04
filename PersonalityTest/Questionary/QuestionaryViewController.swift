@@ -63,10 +63,12 @@ class QuestionaryViewController: UIViewController {
         case .didDisplay(_):
             hidePopupIfNeeded()
             
+            updateNextButtonState()
             tableView.reloadSections(IndexSet(arrayLiteral: 0,1), with: .left)
-        
+            
         case .didSelectAnswer(_, _):
             
+            updateNextButtonState()
             tableView.reloadSections(IndexSet(integer: Section.answer.rawValue), with: .none)
         default:
             break
@@ -84,8 +86,17 @@ class QuestionaryViewController: UIViewController {
         tableView.register(AnswerOptionCell.self)
     }
     
+    private func updateNextButtonState() {
+        nextButton.isEnabled = viewModel.state.answer != nil
+        let _ = UIViewPropertyAnimator(duration: 0.25, dampingRatio: 1.0) { [weak self] in
+            guard let `self` = self else { return }
+            self.nextButton.alpha = self.nextButton.isEnabled ? 1 : 0.5
+        }
+        .startAnimation()
+    }
+    
     @objc func didTapNextButton(_ sender: UIButton) {
-        
+        viewModel.send(.didTapNext)
     }
 }
 
@@ -290,7 +301,7 @@ extension QuestionaryViewController {
         let animator = UIViewPropertyAnimator(duration: 0.1, dampingRatio: 1) { [weak self] in
             guard let `self` = self else { return }
             self.tableView.alpha = 1
-            self.nextButton.alpha = 1
+            self.nextButton.alpha = 0.5
             popup.alpha = 0
         }
         

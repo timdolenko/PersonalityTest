@@ -40,7 +40,7 @@ public class AnswerOptionCell: UITableViewCell {
         let label = UILabel()
         label.font = AnswerOptionCell.textFont
         label.textColor = .textLightColor
-        label.textAlignment = .justified
+        label.textAlignment = .left
         label.numberOfLines = 0
         
         addSubview(label)

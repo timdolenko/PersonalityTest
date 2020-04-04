@@ -7,9 +7,9 @@
 
 import Foundation
 
-class QuestionaryViewModel {
+public class QuestionaryViewModel {
     
-    enum State {
+    public enum State {
         case initial
         case loadingQuestions
         case didDisplay(Question)
@@ -17,9 +17,14 @@ class QuestionaryViewModel {
         case savingResults
         case didSaveResults
         case didFailToSaveResults(Error)
+        
+        public var answer: Answer? {
+            guard case let .didSelectAnswer(_,value) = self else { return nil }
+            return value
+        }
     }
     
-    enum Event {
+    public enum Event {
         case didRequestQuestions
         case didLoadQuestions
         case didSelectAnswer(Question, Answer)
@@ -28,7 +33,7 @@ class QuestionaryViewModel {
         case didFailToSaveResults(Error)
     }
     
-    var state: State = .initial {
+    public var state: State = .initial {
         didSet {
             subscriber?()
         }

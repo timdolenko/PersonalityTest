@@ -28,7 +28,7 @@ public class QuestionTextCell: UITableViewCell {
         let label = UILabel()
         label.font = QuestionTextCell.textFont
         label.textColor = .textLightColor
-        label.textAlignment = .justified
+        label.textAlignment = .left
         label.numberOfLines = 0
         
         addSubview(label)
