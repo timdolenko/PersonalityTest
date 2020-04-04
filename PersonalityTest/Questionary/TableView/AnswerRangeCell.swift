@@ -10,12 +10,18 @@ import SnapKit
 
 public class AnswerRangeCell: UITableViewCell {
     
+    public struct RangeValue {
+        var current: Int
+        var from: Int
+        var to: Int
+    }
+    
     static var identifier: String { String(describing: self) }
     
     class var height: CGFloat { 92.0 }
     
-    weak var titleLbl: UILabel!
-    weak var slider: UISlider!
+    private weak var titleLbl: UILabel!
+    private weak var slider: UISlider!
     
     public var didChangeValue: ((Int) -> ())?
     
@@ -39,6 +45,7 @@ public class AnswerRangeCell: UITableViewCell {
         }
         
         let slider = UISlider()
+        slider.isContinuous = false
         slider.tintColor = .accentColor
         slider.addTarget(self, action: #selector(didChangeValue(_:)), for: .valueChanged)
         addSubview(slider)
@@ -58,8 +65,14 @@ public class AnswerRangeCell: UITableViewCell {
         super.init(coder: coder)
     }
     
+    public func configure(value: RangeValue) {
+        slider.minimumValue = Float(value.from)
+        slider.maximumValue = Float(value.to)
+        slider.value = Float(value.current)
+    }
+    
     public func setOption(value: Int) {
-        
+        slider.value = Float(value)
     }
     
     @objc func didChangeValue(_ sender: UIButton) {

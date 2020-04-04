@@ -25,9 +25,9 @@ public class AnswerOptionCell: UITableViewCell {
         )
     }
     
-    weak var titleLbl: UILabel!
-    weak var checkboxImageView: UIImageView!
-    weak var tapAreaButton: UIButton!
+    private weak var titleLbl: UILabel!
+    private weak var checkboxImageView: UIImageView!
+    private weak var tapAreaButton: UIButton!
     
     public var didTap: (() -> ())?
     
@@ -79,6 +79,10 @@ public class AnswerOptionCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    public func configure(option: String) {
+        titleLbl.text = option
     }
     
     public func setOption(selected isSelected: Bool) {

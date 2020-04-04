@@ -19,7 +19,7 @@ public class QuestionTextCell: UITableViewCell {
         questionText.height(withConstrainedWidth: width - textHorizontalMargin * 2, font: textFont)
     }
     
-    weak var titleLbl: UILabel!
+    private weak var titleLbl: UILabel!
     
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -48,5 +48,9 @@ public class QuestionTextCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    public func configure(with question: String) {
+        titleLbl.text = question
     }
 }
