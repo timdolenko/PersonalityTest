@@ -150,3 +150,14 @@ extension QuestionType.Condition {
         }
     }
 }
+
+extension Question: Hashable {
+    static func == (lhs: Question, rhs: Question) -> Bool {
+        lhs.title == rhs.title && lhs.category == rhs.category
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(category)
+    }
+}

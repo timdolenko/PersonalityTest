@@ -82,6 +82,7 @@ extension QuestionaryViewController {
         button.setTitle("Next", for: .normal)
         button.addTarget(self, action: #selector(didTapNextButton(_:)), for: .touchUpInside)
         button.alpha = 0
+        button.isEnabled = false
         return button
     }
 }

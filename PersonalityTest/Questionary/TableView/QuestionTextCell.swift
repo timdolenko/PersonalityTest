@@ -13,10 +13,10 @@ public class QuestionTextCell: UITableViewCell {
     static var identifier: String { String(describing: self) }
     
     class var textFont: UIFont { .avenirOfSize(16) }
-    class var textHorizontalMargin: CGFloat { 16.0 }
+    class var textHorizontalMargin: CGFloat { 20.0 }
     
     class func height(for questionText: String, with width: CGFloat) -> CGFloat {
-        questionText.width(withConstrainedHeight: width - textHorizontalMargin * 2, font: textFont)
+        questionText.height(withConstrainedWidth: width - textHorizontalMargin * 2, font: textFont)
     }
     
     weak var titleLbl: UILabel!
@@ -30,6 +30,7 @@ public class QuestionTextCell: UITableViewCell {
         label.font = QuestionTextCell.textFont
         label.textColor = .textLightColor
         label.textAlignment = .justified
+        label.numberOfLines = 0
         
         addSubview(label)
         

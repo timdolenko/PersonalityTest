@@ -21,7 +21,8 @@ class QuestionaryViewModel {
     enum Event {
         case didRequestQuestions
         case didLoadQuestions
-        case didTapNext(Answer)
+        case didSelectAnswer(Answer)
+        case didTapNext
         case didSaveResults
         case didFailToSaveResults(Error)
     }
@@ -39,9 +40,10 @@ class QuestionaryViewModel {
     private var currentQuestion: Question? {
         return questionQueue[safe: currentQuestionIndex]
     }
-    private var answers: [(Question, Answer)] = []
+    private var answers: [Question:Answer] = [:]
     private var currentAnswer: Answer? {
-        return answers[safe: currentQuestionIndex]?.1
+        guard let currentQuestion = currentQuestion else { return nil }
+        return answers[currentQuestion]
     }
     
     private var questions: [Question]?
@@ -100,12 +102,12 @@ class QuestionaryViewModel {
         questionQueue.insert(question, at: currentQuestionIndex + 1)
     }
     
-    func handle(_ event: Event) {
+    private func handle(_ event: Event) {
         
         switch event {
         case .didRequestQuestions:
             requestQuestions()
-        case .didLoadQuestions, .didTapNext(_):
+        case .didLoadQuestions, .didTapNext:
             handleSavingResultsIfNeeded()
         default:
             break
@@ -132,7 +134,7 @@ class QuestionaryViewModel {
         switch event {
         case .didRequestQuestions:
             return .loadingQuestions
-        case .didLoadQuestions, .didTapNext(_):
+        case .didLoadQuestions, .didTapNext:
             
             if let nextQuestion = requestNextQuestion() {
                 return .didDisplay(nextQuestion)
@@ -145,6 +147,9 @@ class QuestionaryViewModel {
             
         case let .didFailToSaveResults(error):
             return .didFailToSaveResults(error)
+            
+        case let .didSelectAnswer(answer):
+            return .initial
         }
     }
 }
