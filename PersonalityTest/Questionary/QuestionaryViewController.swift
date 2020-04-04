@@ -18,6 +18,11 @@ class QuestionaryViewController: UIViewController {
     
     private var viewModel: QuestionaryViewModel!
     
+    private enum Section: Int, CaseIterable {
+        case question
+        case answer
+    }
+    
     required convenience init(viewModel: QuestionaryViewModel) {
         self.init(nibName: nil, bundle: nil)
         self.viewModel = viewModel
@@ -25,6 +30,8 @@ class QuestionaryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureTableView()
         
         viewModel.bind { [weak self] in
             self?.viewModelStateDidChange()
@@ -42,6 +49,10 @@ class QuestionaryViewController: UIViewController {
             break
         case .loadingQuestions:
             showPopup("Let’s wait for the questions")
+        case .didDisplay(_, _):
+            hidePopupIfNeeded()
+            
+            tableView.reloadSections(IndexSet(arrayLiteral: 0,1), with: .left)
         default:
             break
         }
@@ -63,13 +74,121 @@ class QuestionaryViewController: UIViewController {
     }
 }
 
+// MARK:  Table View Delegate
 extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int { Section.allCases.count }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        0
+        guard let section = Section(rawValue: section) else { return 0 }
+        
+        guard case let .didDisplay(question, _) = viewModel.state else { return 0 }
+        
+        switch section {
+        case .question:
+            return 1
+        case .answer:
+            
+            switch question.type.answerType {
+            case let .singleChoice(options: options):
+                return options.count
+            case .numberRange(_):
+                return 1
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
+        
+        guard case let .didDisplay(question, _) = viewModel.state else { return UITableViewCell() }
+        
+        switch section {
+        case .question:
+            
+            let cell = tableView.dequeue(QuestionTextCell.self, at: indexPath)
+            
+            cell.configure(with: question.title)
+            
+            return cell
+            
+        case .answer:
+            
+            switch question.type.answerType {
+            case let .singleChoice(options: options):
+                
+                let option = options[indexPath.row]
+                
+                let cell = tableView.dequeue(AnswerOptionCell.self, at: indexPath)
+                
+                cell.configure(with: option)
+                
+                cell.setOption(selected: isOptionSelected(option))
+                
+                return cell
+            case let .numberRange(range: range):
+                
+                let cell = tableView.dequeue(AnswerRangeCell.self, at: indexPath)
+                
+                cell.configure(with: AnswerRangeCell.RangeValue(current: selectedValue(), from: range.from, to: range.to))
+                
+                return cell
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let section = Section(rawValue: indexPath.section) else { return 0 }
+        
+        guard case let .didDisplay(question, _) = viewModel.state else { return 0 }
+        
+        switch section {
+        case .question:
+            return 100
+        case .answer:
+            
+            switch question.type.answerType {
+            case let .singleChoice(options: options):
+                guard let option = options[safe: indexPath.row] else { return 0 }
+                
+                return AnswerOptionCell.height(for: option, with: tableView.frame.width)
+            case .numberRange(_):
+                
+                return AnswerRangeCell.height
+            }
+        }
+    }
+    
+    func sectionMargin(for section: Int) -> CGFloat {
+        guard let section = Section(rawValue: section) else { return 0 }
+        guard case .didDisplay(_, _) = viewModel.state else { return 0 }
+        
+        switch section {
+        case .question:
+            return 0
+        case .answer:
+           return 20
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int)
+        -> CGFloat { sectionMargin(for: section) }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int)
+        -> CGFloat { sectionMargin(for: section) }
+}
+
+extension QuestionaryViewController {
+    func isOptionSelected(_ option: String) -> Bool {
+        guard case let .didDisplay(_, answer) = viewModel.state else { return false }
+        guard case let .option(text) = answer else { return false }
+        return text == option
+    }
+    
+    func selectedValue() -> Int {
+        guard case let .didDisplay(question, answer) = viewModel.state else { return 0 }
+        guard case let .numberRange(range: range) = question.type.answerType else { return 0 }
+        guard case let .number(number) = answer else { return range.from }
+        return number
     }
 }
 
@@ -78,6 +197,7 @@ extension QuestionaryViewController {
     
     private func showPopup(_ message: String) {
         let popup = PopupView()
+        self.popup = popup
         popup.label.text = message
         popup.activityIndicator.startAnimating()
         popup.alpha = 0
@@ -97,11 +217,14 @@ extension QuestionaryViewController {
         animator.startAnimation()
     }
     
-    private func hidePopup() {
+    private func hidePopupIfNeeded() {
         guard let popup = popup else { return }
         popup.activityIndicator.stopAnimating()
         
-        let animator = UIViewPropertyAnimator(duration: 0.1, dampingRatio: 1) {
+        let animator = UIViewPropertyAnimator(duration: 0.1, dampingRatio: 1) { [weak self] in
+            guard let `self` = self else { return }
+            self.tableView.alpha = 1
+            self.nextButton.alpha = 1
             popup.alpha = 0
         }
         

@@ -12,7 +12,7 @@ class QuestionaryViewModel {
     enum State {
         case initial
         case loadingQuestions
-        case didDisplay(Question)
+        case didDisplay(Question, Answer?)
         case savingResults
         case didSaveResults
         case didFailToSaveResults(Error)
@@ -21,7 +21,7 @@ class QuestionaryViewModel {
     enum Event {
         case didRequestQuestions
         case didLoadQuestions
-        case didSelectAnswer(Answer)
+        case didSelectAnswer(Question, Answer)
         case didTapNext
         case didSaveResults
         case didFailToSaveResults(Error)
@@ -75,6 +75,7 @@ class QuestionaryViewModel {
         questions = response.questions
         categories = response.categories
         
+        currentQuestionIndex = -1
         questionQueue = response.categories
             .map { category in
                 response.questions.filter { $0.category == category }
@@ -137,7 +138,7 @@ class QuestionaryViewModel {
         case .didLoadQuestions, .didTapNext:
             
             if let nextQuestion = requestNextQuestion() {
-                return .didDisplay(nextQuestion)
+                return .didDisplay(nextQuestion, answers[nextQuestion])
             } else {
                 return .savingResults
             }
@@ -148,8 +149,10 @@ class QuestionaryViewModel {
         case let .didFailToSaveResults(error):
             return .didFailToSaveResults(error)
             
-        case let .didSelectAnswer(answer):
-            return .initial
+        case let .didSelectAnswer(question, answer):
+            
+            answers[question] = answer
+            return .didDisplay(question, answers[question])
         }
     }
 }

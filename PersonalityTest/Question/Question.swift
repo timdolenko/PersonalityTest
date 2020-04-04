@@ -72,7 +72,7 @@ struct QuestionType {
     }
     
     var typeString: QuestionTypeString
-    var type: AnswerType
+    var answerType: AnswerType
     var condition: QuestionType.Condition?
 }
 
@@ -87,17 +87,22 @@ extension QuestionType: Decodable {
             
             let options = try container.decode(Options.self, forKey: .options)
         
-            type = .singleChoice(options: options)
+            answerType = .singleChoice(options: options)
             
         case .numberRange:
             
             let range = try container.decode(NumberRange.self, forKey: .range)
             
-            type = .numberRange(range: range)
+            answerType = .numberRange(range: range)
         }
         
         condition = try? container.decode(Condition.self, forKey: .condition)
     }
+}
+
+enum Answer {
+    case option(String)
+    case number(Int)
 }
 
 class Question: Decodable {
