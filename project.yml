@@ -1,0 +1,19 @@
+name: PersonalityTest
+options:
+  bundleIdPrefix: com.personality.test
+  postGenCommand: pod install
+targets:
+  PersonalityTest:
+    type: application
+    platform: iOS
+    deploymentTarget: "11.0"
+    sources: [PersonalityTest]
+  PersonalityTestTests:
+    platform: iOS
+    sources: [PersonalityTestTests]
+    type: bundle.unit-test
+  PersonalityTestUITests:
+    platform: iOS
+    sources: [PersonalityTestUITests]
+    type: bundle.ui-testing
+
