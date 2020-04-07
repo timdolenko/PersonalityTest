@@ -85,6 +85,19 @@ public class QuestionaryViewModel {
         }
     }
     
+    private func saveAnswers() {
+        repository.saveAnswers(answers: answers) { [weak self] (result) in
+            guard let `self` = self else { return }
+            
+            switch result {
+            case .success:
+                self.send(.didSaveResults)
+            case let .failure(error):
+                self.send(.didFailToSaveResults(error))
+            }
+        }
+    }
+    
     private func setupQueue(with response: QuestionList) {
         questions = response.questions
         categories = response.categories
@@ -131,18 +144,7 @@ public class QuestionaryViewModel {
     
     private func handleSavingResultsIfNeeded() {
         guard case .savingResults = state else { return }
-        MockDataProvider.uploadResultsWithDelaySuccess { [weak self] (result) in
-            DispatchQueue.main.async { [weak self] in
-                guard let `self` = self else { return }
-                
-                switch result {
-                case .success(_):
-                    self.send(.didSaveResults)
-                case let .failure(error):
-                    self.send(.didFailToSaveResults(error))
-                }
-            }
-        }
+        saveAnswers()
     }
     
     private func reduce(_ state: State, _ event: Event) -> State {

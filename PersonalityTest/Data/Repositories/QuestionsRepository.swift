@@ -10,6 +10,9 @@ import Foundation
 protocol QuestionsRepositoryProtocol {
     @discardableResult
     func fetchQuestions(completion: @escaping (Result<QuestionList, Error>) -> Void) -> Cancellable?
+    
+    @discardableResult
+    func saveAnswers(answers: [Question:Answer], completion: @escaping (Result<Void, Error>) -> Void) -> Cancellable?
 }
 
 final class QuestionsRepository {
