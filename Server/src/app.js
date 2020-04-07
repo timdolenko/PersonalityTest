@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const fs = require('fs')
-const nameGenerator = require('./name_generator.js')
+const { generateUniqueIdentifier } = require('./name_generator.js')
 
 const app = express()
 const publicDirectoryPath = path.join(__dirname,'../public')
@@ -15,7 +15,7 @@ app.post('/saveAnswers', async (req,res) => {
     
     const data = JSON.stringify(req.body)
     
-    const filename = answersDirectoryPath + '/' + nameGenerator.generateUniqueIdentifier() + '.json'
+    const filename = answersDirectoryPath + '/' + generateUniqueIdentifier() + '.json'
 
     try {
         fs.writeFile(filename, data, (e) => {
