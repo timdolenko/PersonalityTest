@@ -13,7 +13,8 @@ router.use(express.static(publicDirectoryPath))
 router.post('/saveAnswers', async (req,res) => {
     
     const data = JSON.stringify(req.body)
-    
+    console.log(data)
+    console.log(req.body)
     const filename = answersDirectoryPath + '/' + generateUniqueIdentifier() + '.json'
 
     try {

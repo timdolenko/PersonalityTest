@@ -76,6 +76,8 @@ extension Requestable {
         urlRequest.httpMethod = method.string
         
         if let body = try? bodyParameters?.toDictionary() {
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
             urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
         
