@@ -7,6 +7,64 @@
 
 import Foundation
 
+public enum HTTPMethodType: String {
+    case get
+    case post
+    
+    var string: String {
+        self.rawValue.uppercased()
+    }
+}
+
+public class Endpoint<R> {
+    
+    public typealias Response = R
+    public var path: String
+    public var method: HTTPMethodType
+    
+    init(path: String,
+         method: HTTPMethodType) {
+        self.path = path
+        self.method = method
+    }
+}
+
+public protocol Requestable {
+    var path: String { get }
+    var method: HTTPMethodType { get }
+    
+    func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
+}
+
+enum RequestGenerationError: Error {
+    case components
+}
+extension Requestable {
+    
+    func url(with config: NetworkConfigurable) throws -> URL {
+        let baseURL = config.baseURL.basePath
+        
+        guard var components = URLComponents(string: baseURL) else {
+            throw RequestGenerationError.components
+        }
+        
+        components.path = path
+        
+        guard let url = components.url else { throw RequestGenerationError.components }
+        
+        return url
+    }
+    
+    func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
+        let url = try self.url(with: config)
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = method.string
+        
+        return urlRequest
+    }
+}
+
 enum ApiResourceError: Error {
     case components
     case url
