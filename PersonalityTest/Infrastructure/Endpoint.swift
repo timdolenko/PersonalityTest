@@ -21,13 +21,16 @@ public class Endpoint<R>: ResponseRequestable {
     public typealias Response = R
     public var path: String
     public var method: HTTPMethodType
+    public var bodyParameters: Encodable? = nil
     public var responseDecoder: ResponseDecoder
     
     public init(path: String,
          method: HTTPMethodType,
+         bodyParameters: Encodable? = nil,
          responseDecoder: ResponseDecoder = JSONResponseDecoder()) {
         self.path = path
         self.method = method
+        self.bodyParameters = bodyParameters
         self.responseDecoder = responseDecoder
     }
 }
@@ -35,6 +38,7 @@ public class Endpoint<R>: ResponseRequestable {
 public protocol Requestable {
     var path: String { get }
     var method: HTTPMethodType { get }
+    var bodyParameters: Encodable? { get }
     
     func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
 }
@@ -71,6 +75,10 @@ extension Requestable {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.string
         
+        if let body = try? bodyParameters?.toDictionary() {
+            urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        }
+        
         return urlRequest
     }
 }
@@ -78,5 +86,13 @@ extension Requestable {
 extension URL {
     var basePath: String {
         absoluteString.last != "/" ? absoluteString + "/" : absoluteString
+    }
+}
+
+private extension Encodable {
+    func toDictionary() throws -> [String: Any]? {
+        let data = try JSONEncoder().encode(self)
+        let josnData = try JSONSerialization.jsonObject(with: data)
+        return josnData as? [String : Any]
     }
 }

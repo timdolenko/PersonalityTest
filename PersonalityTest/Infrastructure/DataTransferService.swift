@@ -22,6 +22,11 @@ public protocol DataTransferServiceProtocol {
         with endpoint: E,
         completion: @escaping CompletionHandler<T>
     ) -> NetworkCancellable? where E.Response == T
+    
+    func request<E: ResponseRequestable>(
+        with endpoint: E,
+        completion: @escaping (Result<Void, Error>) -> Void)
+    -> NetworkCancellable? where E.Response == Void
 }
 
 public protocol ResponseDecoder {
@@ -55,6 +60,20 @@ extension DataTransferService: DataTransferServiceProtocol {
                 DispatchQueue.main.async { completion(.failure(error)) }
             }
         }
+    }
+    
+    public func request<E: ResponseRequestable>(with endpoint: E, completion: @escaping (Result<Void, Error>) -> Void)
+        -> NetworkCancellable? where E.Response == Void {
+        
+            networkService.request(endpoint: endpoint) { (result) in
+                
+                switch result {
+                case .success:
+                    DispatchQueue.main.async { completion(.success(())) }
+                case let .failure(error):
+                    DispatchQueue.main.async { completion(.failure(error)) }
+                }
+            }
     }
     
     public func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, Error> {

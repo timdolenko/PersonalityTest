@@ -23,7 +23,8 @@ final class QuestionsRepository {
 
 extension QuestionsRepository: QuestionsRepositoryProtocol {
     
-    public func fetchQuestions(completion: @escaping (Result<QuestionList, Error>) -> Void) -> Cancellable? {
+    public func fetchQuestions(completion: @escaping (Result<QuestionList, Error>) -> Void)
+        -> Cancellable? {
         let endpoint = Endpoints.getQuestions()
         
         let networkTask = dataTransferService.request(with: endpoint) { (response: Result<QuestionsResponseDTO, Error>) in
@@ -40,6 +41,19 @@ extension QuestionsRepository: QuestionsRepositoryProtocol {
             case let .failure(error):
                 completion(.failure(error))
             }
+        }
+        
+        return RepositoryTask(networkTask: networkTask)
+    }
+    
+    public func saveAnswers(
+        answers: [Question:Answer],
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) -> Cancellable? {
+        let endpoint = Endpoints.saveAnswers(with: SaveAnswersRequestDTO(answers: answers))
+        
+        let networkTask = dataTransferService.request(with: endpoint) { (response) in
+            completion(response)
         }
         
         return RepositoryTask(networkTask: networkTask)
