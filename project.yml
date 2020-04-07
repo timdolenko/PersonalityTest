@@ -7,6 +7,8 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "11.0"
+    settings:
+      API_BASE_URL: http://127.0.0.1:3000
     sources: 
       - path: PersonalityTest
       - path: Server/public/personality_test.json
