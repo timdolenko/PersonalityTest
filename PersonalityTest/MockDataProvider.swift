@@ -9,12 +9,12 @@ import Foundation
 
 struct MockDataProvider {
     
-    static func provideQuestions() -> QuestionDataResponse {
+    static func provideQuestionsDTO() -> QuestionsResponseDTO {
         guard let path = Bundle.main.url(forResource: "personality_test", withExtension: "json") else { fatalError() }
         
         do {
             let data = try Data(contentsOf: path)
-            let response = try! JSONDecoder().decode(QuestionDataResponse.self, from: data)
+            let response = try! JSONDecoder().decode(QuestionsResponseDTO.self, from: data)
             
             return response
         } catch {
@@ -23,10 +23,10 @@ struct MockDataProvider {
     }
     
     static func provideQuestionsWithDelay(
-        _ completion: @escaping (Result<QuestionDataResponse,Never>) -> ()
+        _ completion: @escaping (Result<QuestionList,Never>) -> ()
     ) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            completion(.success(provideQuestions()))
+            completion(.success(try! provideQuestionsDTO().mapToDomain()))
         }
     }
     

@@ -7,9 +7,7 @@
 
 import Foundation
 
-struct QuestionDataResponse: Decodable {
-    
+struct QuestionList {
     var questions: [Question]
     var categories: [String]
-    
 }

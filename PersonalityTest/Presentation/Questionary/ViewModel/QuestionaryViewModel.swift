@@ -77,7 +77,7 @@ public class QuestionaryViewModel {
         }
     }
     
-    private func setupQueue(with response: QuestionDataResponse) {
+    private func setupQueue(with response: QuestionList) {
         questions = response.questions
         categories = response.categories
         
@@ -102,7 +102,7 @@ public class QuestionaryViewModel {
     
     private func insertConditionQuestionIfNeeded() {
         guard let current = currentQuestion else { return }
-        guard let condition = current.type.condition else { return }
+        guard let condition = current.answerDescription.condition else { return }
         guard let answer = currentAnswer else { return }
         guard let question = condition.nextQuestion(for: answer) else { return }
         

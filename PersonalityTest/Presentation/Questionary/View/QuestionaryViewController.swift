@@ -114,7 +114,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
             return 1
         case .answer:
             
-            switch question.type.answerType {
+            switch question.answerDescription.type {
             case let .singleChoice(options: options):
                 return options.count
             case .numberRange(_):
@@ -139,7 +139,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
             
         case .answer:
             
-            switch question.type.answerType {
+            switch question.answerDescription.type {
             case let .singleChoice(options: options):
                 
                 let option = options[indexPath.row]
@@ -188,7 +188,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
             return max(remainingHeight, minimumCellHeight)
         case .answer:
             
-            switch question.type.answerType {
+            switch question.answerDescription.type {
             case let .singleChoice(options: options):
                 guard let option = options[safe: indexPath.row] else { return 0 }
                 
@@ -258,9 +258,9 @@ extension QuestionaryViewController {
         switch viewModel.state {
         case let .didDisplay(question):
             
-            return question.type.answerType.range?.from ?? 0
+            return question.answerDescription.type.range?.from ?? 0
         case let .didSelectAnswer(question, answer):
-            let range = question.type.answerType.range
+            let range = question.answerDescription.type.range
             
             return answer.number ?? range?.from ?? 0
         default:
