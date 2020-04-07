@@ -1,7 +1,7 @@
 const path = require('path')
 const express = require('express')
 const fs = require('fs')
-const { generateUniqueIdentifier } = require('./name_generator.js')
+const { generateUniqueIdentifier } = require('./utils/uniqueIdentifier.js')
 
 const app = express()
 const publicDirectoryPath = path.join(__dirname,'../public')
