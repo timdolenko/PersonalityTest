@@ -10,11 +10,12 @@ import Foundation
 final class AppDIContainer {
     
     lazy var appConfiguration = AppConfiguration()
-    
+//
 //    lazy var apiDataTransferService: DataTransferService = {
 //        let config = ApiDataNetworkConfig(baseURL: URL(string: appConfiguration.apiBaseURL)!)
-//        
-//        
+//
+//        let networkService = NetworkService(config: config)
+//
 //    }()
     
 }

@@ -21,11 +21,14 @@ public class Endpoint<R> {
     public typealias Response = R
     public var path: String
     public var method: HTTPMethodType
+    public var responseDecoder: ResponseDecoder
     
     init(path: String,
-         method: HTTPMethodType) {
+         method: HTTPMethodType,
+         responseDecoder: ResponseDecoder = JSONResponseDecoder()) {
         self.path = path
         self.method = method
+        self.responseDecoder = responseDecoder
     }
 }
 
