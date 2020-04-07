@@ -12,6 +12,7 @@ public class QuestionaryViewModel {
     public enum State {
         case initial
         case loadingQuestions
+        case didFailToLoadQuestions(Error)
         case didDisplay(Question)
         case didSelectAnswer(Question, Answer)
         case savingResults
@@ -27,6 +28,7 @@ public class QuestionaryViewModel {
     public enum Event {
         case didRequestQuestions
         case didLoadQuestions
+        case didFailToLoadQuestions(Error)
         case didSelectAnswer(Question, Answer)
         case didTapNext
         case didSaveResults
@@ -77,8 +79,8 @@ public class QuestionaryViewModel {
             switch result {
             case let .success(response):
                 self.setupQueue(with: response)
-            default:
-                break
+            case let .failure(error):
+                self.send(.didFailToLoadQuestions(error))
             }
         }
     }
@@ -164,6 +166,9 @@ public class QuestionaryViewModel {
         case let .didSelectAnswer(question, answer):
             answers[question] = answer
             return .didSelectAnswer(question, answer)
+            
+        case let .didFailToLoadQuestions(error):
+            return .didFailToLoadQuestions(error)
         }
     }
 }
