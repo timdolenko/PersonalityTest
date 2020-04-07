@@ -16,14 +16,14 @@ public enum HTTPMethodType: String {
     }
 }
 
-public class Endpoint<R> {
+public class Endpoint<R>: ResponseRequestable {
     
     public typealias Response = R
     public var path: String
     public var method: HTTPMethodType
     public var responseDecoder: ResponseDecoder
     
-    init(path: String,
+    public init(path: String,
          method: HTTPMethodType,
          responseDecoder: ResponseDecoder = JSONResponseDecoder()) {
         self.path = path
@@ -39,12 +39,19 @@ public protocol Requestable {
     func urlRequest(with networkConfig: NetworkConfigurable) throws -> URLRequest
 }
 
+public protocol ResponseRequestable: Requestable {
+    associatedtype Response
+    
+    var responseDecoder: ResponseDecoder { get }
+}
+
 enum RequestGenerationError: Error {
     case components
 }
+
 extension Requestable {
     
-    func url(with config: NetworkConfigurable) throws -> URL {
+    public func url(with config: NetworkConfigurable) throws -> URL {
         let baseURL = config.baseURL.basePath
         
         guard var components = URLComponents(string: baseURL) else {
@@ -58,7 +65,7 @@ extension Requestable {
         return url
     }
     
-    func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
+    public func urlRequest(with config: NetworkConfigurable) throws -> URLRequest {
         let url = try self.url(with: config)
         
         var urlRequest = URLRequest(url: url)

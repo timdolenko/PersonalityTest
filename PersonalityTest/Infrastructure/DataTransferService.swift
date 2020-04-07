@@ -33,11 +33,31 @@ public final class DataTransferService {
 
 extension DataTransferService: DataTransferServiceProtocol {
     
-//    public func request<T: Decodable, E>(with endpoint: Endpoint<E>,
-//                                         completion: @escaping CompletionHandler<T>) -> NetworkCancellable? where E.Response == T {
-//        
-//    }
+    public func request<T: Decodable, E: ResponseRequestable>(with endpoint: Endpoint<E>, completion: @escaping CompletionHandler<T>)
+        -> NetworkCancellable? where E.Response == T {
+            
+        networkService.request(endpoint: endpoint) { [weak self] (result) in
+            guard let `self` = self else { return }
+            
+            switch result {
+            case let .success(data):
+                let result: Result<T, Error> = self.decode(data: data, decoder: endpoint.responseDecoder)
+                DispatchQueue.main.async { completion(result) }
+            case let .failure(error):
+                DispatchQueue.main.async { completion(.failure(error)) }
+            }
+        }
+    }
     
+    public func decode<T: Decodable>(data: Data?, decoder: ResponseDecoder) -> Result<T, Error> {
+        do {
+            guard let data = data else { return .failure(DataTransferError.noResponse) }
+            let result: T = try decoder.decode(data)
+            return .success(result)
+        } catch {
+            return .failure(DataTransferError.parsing(error))
+        }
+    }
 }
 
 public class JSONResponseDecoder: ResponseDecoder {
