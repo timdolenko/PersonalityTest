@@ -11,13 +11,17 @@ class AppCoordinator: Coordinator {
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     
-    init(navigationController: UINavigationController) {
+    private let appDIContainer: AppDIContainer
+    
+    init(navigationController: UINavigationController, appDIContainer: AppDIContainer) {
         navigationController.isNavigationBarHidden = true
         self.navigationController = navigationController
+        self.appDIContainer = appDIContainer
     }
     
     func start() {
-        let controller = QuestionaryViewController(viewModel: QuestionaryViewModel())
-        navigationController.pushViewController(controller, animated: false)
+        let questionarySceneDIContainer = appDIContainer.makeQuestionarySceneDIContainer()
+        let coordinator = questionarySceneDIContainer.makeQuestionaryFlowCoordinator(navigationController: navigationController)
+        coordinator.start()
     }
 }

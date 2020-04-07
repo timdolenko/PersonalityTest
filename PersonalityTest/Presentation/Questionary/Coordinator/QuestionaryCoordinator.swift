@@ -1,0 +1,31 @@
+//
+//  QuestionaryCoordinator.swift
+//  PersonalityTest
+//
+//  Created by Tymofii Dolenko on 08.04.2020.
+//
+
+import UIKit
+
+protocol QuestionaryCoordinatorDependencies {
+    func makeQuestionaryViewController() -> QuestionaryViewController
+}
+
+class QuestionaryCoordinator: Coordinator {
+    
+    var childCoordinators: [Coordinator] = []
+    var navigationController: UINavigationController
+    
+    private let dependencies: QuestionaryCoordinatorDependencies
+    
+    init(navigationController: UINavigationController, dependencies: QuestionaryCoordinatorDependencies) {
+        self.navigationController = navigationController
+        self.dependencies = dependencies
+    }
+    
+    func start() {
+        let controller = dependencies.makeQuestionaryViewController()
+        
+        navigationController.pushViewController(controller, animated: false)
+    }
+}

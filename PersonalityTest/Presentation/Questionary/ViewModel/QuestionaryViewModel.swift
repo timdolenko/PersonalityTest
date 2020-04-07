@@ -55,6 +55,12 @@ public class QuestionaryViewModel {
     private var questions: [Question]?
     private var categories: [String]?
     
+    private var repository: QuestionsRepositoryProtocol
+    
+    init(repository: QuestionsRepositoryProtocol) {
+        self.repository = repository
+    }
+    
     func bind(_ subscriber: @escaping () -> ()) {
         self.subscriber = subscriber
     }

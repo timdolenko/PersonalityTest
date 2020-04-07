@@ -11,6 +11,7 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    let appDIContainer = AppDIContainer()
     var coordinator: AppCoordinator?
     var window: UIWindow?
 
@@ -23,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func setupCoordinator() {
         let navController = UINavigationController()
-        coordinator = AppCoordinator(navigationController: navController)
+        coordinator = AppCoordinator(navigationController: navController, appDIContainer: appDIContainer)
         coordinator?.start()
     }
     

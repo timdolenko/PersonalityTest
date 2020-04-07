@@ -19,5 +19,9 @@ final class AppDIContainer {
         return DataTransferService(networkService: networkService)
     }()
     
-    
+    func makeQuestionarySceneDIContainer() -> QuestionarySceneDIContainer {
+        let dependencies = QuestionarySceneDIContainer.Dependencies(apiDataTransferService: apiDataTransferService)
+        
+        return QuestionarySceneDIContainer(dependencies: dependencies)
+    }
 }
