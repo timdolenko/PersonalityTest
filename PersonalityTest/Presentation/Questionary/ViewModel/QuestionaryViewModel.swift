@@ -71,7 +71,7 @@ public class QuestionaryViewModel {
     }
     
     private func requestQuestions() {
-        MockDataProvider.provideQuestionsWithDelay { [weak self] (result) in
+        repository.fetchQuestions { [weak self] (result) in
             guard let `self` = self else { return }
             
             switch result {
