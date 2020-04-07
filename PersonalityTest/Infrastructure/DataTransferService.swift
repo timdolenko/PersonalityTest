@@ -16,6 +16,12 @@ public enum DataTransferError: Error {
 
 public protocol DataTransferServiceProtocol {
     typealias CompletionHandler<T> = (Result<T, Error>) -> Void
+    
+    @discardableResult
+    func request<T: Decodable, E: ResponseRequestable>(
+        with endpoint: E,
+        completion: @escaping CompletionHandler<T>
+    ) -> NetworkCancellable? where E.Response == T
 }
 
 public protocol ResponseDecoder {
@@ -33,8 +39,10 @@ public final class DataTransferService {
 
 extension DataTransferService: DataTransferServiceProtocol {
     
-    public func request<T: Decodable, E: ResponseRequestable>(with endpoint: Endpoint<E>, completion: @escaping CompletionHandler<T>)
-        -> NetworkCancellable? where E.Response == T {
+    public func request<T: Decodable, E: ResponseRequestable>(
+        with endpoint: E,
+        completion: @escaping CompletionHandler<T>
+    ) -> NetworkCancellable? where E.Response == T {
             
         networkService.request(endpoint: endpoint) { [weak self] (result) in
             guard let `self` = self else { return }
