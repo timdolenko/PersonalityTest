@@ -16,20 +16,9 @@ class QuestionaryViewController: UIViewController {
     
     weak var popup: PopupView?
     
-    private var viewModel: QuestionaryViewModel!
-    
     weak var coordinator: QuestionaryCoordinator?
-    
-    private var question: Question? {
-        switch viewModel.state {
-        case let .didDisplay(question):
-            return question
-        case let .didSelectAnswer(question, _):
-            return question
-        default:
-            return nil
-        }
-    }
+    private var viewModel: QuestionaryViewModel!
+    private var observationToken: ObservationToken?
     
     private enum Section: Int, CaseIterable {
         case question
@@ -41,13 +30,17 @@ class QuestionaryViewController: UIViewController {
         self.viewModel = viewModel
     }
     
+    deinit {
+        observationToken?.cancel()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureTableView()
         
-        viewModel.bind { [weak self] in
-            self?.viewModelStateDidChange()
+        observationToken = viewModel.state.observe { [weak self] (state) in
+            self?.viewModelStateDidChange(state)
         }
     }
     
@@ -56,13 +49,13 @@ class QuestionaryViewController: UIViewController {
         viewModel.send(.didRequestQuestions)
     }
     
-    private func viewModelStateDidChange() {
-        switch viewModel.state {
+    private func viewModelStateDidChange(_ state: QuestionaryViewModel.State) {
+        switch state {
         case .initial:
             break
         case .loadingQuestions:
-            showPopup("Let’s wait for the questions")
             
+            showPopup("Let’s wait for the questions")
         case let .didFailToLoadQuestions(error):
             
             showPopup(with: error)
@@ -86,7 +79,7 @@ class QuestionaryViewController: UIViewController {
             showPopup("We’ve saved your result", icon: #imageLiteral(resourceName: "checkbox_checked.pdf"))
         }
         
-        updateTitleIfNeeded(viewModel.state.title)
+        updateTitleIfNeeded(state.title)
     }
     
     private func configureTableView() {
@@ -101,7 +94,7 @@ class QuestionaryViewController: UIViewController {
     }
     
     private func updateNextButtonState() {
-        nextButton.isEnabled = viewModel.state.answer != nil
+        nextButton.isEnabled = viewModel.state.value.answer != nil
         let _ = UIViewPropertyAnimator(duration: 0.25, dampingRatio: 1.0) { [weak self] in
             guard let `self` = self else { return }
             self.nextButton.alpha = self.nextButton.isEnabled ? 1 : 0.5
@@ -130,7 +123,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         
-        guard let question = question else { return 0 }
+        guard let question = viewModel.state.value.question else { return 0 }
         
         switch section {
         case .question:
@@ -149,7 +142,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         
-        guard let question = question else { return UITableViewCell() }
+        guard let question = viewModel.state.value.question else { return UITableViewCell() }
         
         switch section {
         case .question:
@@ -196,7 +189,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let section = Section(rawValue: indexPath.section) else { return 0 }
         
-        guard let question = question else { return 0 }
+        guard let question = viewModel.state.value.question else { return 0 }
         
         switch section {
         case .question:
@@ -238,7 +231,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     
     func sectionMargin(for section: Int) -> CGFloat {
         guard let section = Section(rawValue: section) else { return 0 }
-        guard let _ = question else { return 0 }
+        guard let _ = viewModel.state.value.question else { return 0 }
         
         switch section {
         case .question:
@@ -271,14 +264,14 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
 extension QuestionaryViewController {
     
     func isOptionSelected(_ option: String) -> Bool {
-        guard case let .didSelectAnswer(_, answer) = viewModel.state else { return false }
+        guard case let .didSelectAnswer(_, answer) = viewModel.state.value else { return false }
         guard case let .option(text) = answer else { return false }
         return text == option
     }
     
     func selectedValue() -> Int {
         
-        switch viewModel.state {
+        switch viewModel.state.value {
         case let .didDisplay(question):
             
             return question.answerDescription.type.range?.from ?? 0

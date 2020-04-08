@@ -24,6 +24,17 @@ public class QuestionaryViewModel {
             return value
         }
         
+        public var question: Question? {
+            switch self {
+            case let .didDisplay(question):
+                return question
+            case let .didSelectAnswer(question, _):
+                return question
+            default:
+                return nil
+            }
+        }
+        
         public var title: String {
             switch self {
             case .initial,
@@ -47,13 +58,7 @@ public class QuestionaryViewModel {
         case didFailToSaveResults(Error)
     }
     
-    public var state: State = .initial {
-        didSet {
-            subscriber?()
-        }
-    }
-    
-    private var subscriber: (() -> ())?
+    public var state: Observable<State> = Observable(.initial)
     
     private var questionQueue: [Question] = []
     private var currentQuestionIndex: Int = -1
@@ -75,12 +80,8 @@ public class QuestionaryViewModel {
         self.repository = repository
     }
     
-    func bind(_ subscriber: @escaping () -> ()) {
-        self.subscriber = subscriber
-    }
-    
     func send(_ event: Event) {
-        state = reduce(state, event)
+        state.value = reduce(state.value, event)
         handle(event)
     }
     
@@ -128,7 +129,7 @@ public class QuestionaryViewModel {
         
         insertConditionQuestionIfNeeded()
         
-        currentQuestionIndex += 5
+        currentQuestionIndex += 1
         
         return questionQueue[safe: currentQuestionIndex]
     }
@@ -155,7 +156,7 @@ public class QuestionaryViewModel {
     }
     
     private func handleSavingResultsIfNeeded() {
-        guard case .savingResults = state else { return }
+        guard case .savingResults = state.value else { return }
         saveAnswers()
     }
     
