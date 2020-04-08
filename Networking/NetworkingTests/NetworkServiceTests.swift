@@ -1,5 +1,5 @@
 //
-//  NetworkingTests.swift
+//  NetworkServiceTests.swift
 //  NetworkingTests
 //
 //  Created by Tymofii Dolenko on 08.04.2020.
@@ -9,7 +9,26 @@
 import XCTest
 @testable import Networking
 
-class NetworkingTests: XCTestCase {
+class NetworkServiceTests: XCTestCase {
+    
+    private struct EndpointMock: Requestable {
+        var path: String
+        var method: HTTPMethodType
+        var bodyParameters: Encodable?
+        
+        init(path: String, method: HTTPMethodType) {
+            self.path = path
+            self.method = method
+        }
+    }
+    
+    private enum NetworkErrorMock: Error {
+        case someError
+    }
+    
+    func test_whenMockDataPassed_shouldReturnProperResponse() {
+        let config = NetworkConfigurableMock()
+    }
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

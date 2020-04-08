@@ -27,12 +27,22 @@ public protocol NetworkServiceProtocol {
     func request(endpoint: Requestable, completion: @escaping CompletionHandler) -> NetworkCancellable?
 }
 
+public protocol NetworkSessionManagerProtocol {
+    typealias CompletionHandler = (Data?, URLResponse?, Error?) -> Void
+    
+    func request(_ request: URLRequest,
+                 completion: @escaping CompletionHandler) -> NetworkCancellable
+}
+
 public final class NetworkService {
 
     private let config: NetworkConfigurable
+    private let sessionManager: NetworkSessionManagerProtocol
     
-    public init(config: NetworkConfigurable) {
+    public init(config: NetworkConfigurable,
+                sessionManager: NetworkSessionManagerProtocol) {
         self.config = config
+        self.sessionManager = sessionManager
     }
     
     private func resolve(error: Error) -> NetworkError {
@@ -75,6 +85,15 @@ extension NetworkService: NetworkServiceProtocol {
         }
         task.resume()
         
+        return task
+    }
+}
+
+public final class NetworkSessionManager: NetworkSessionManagerProtocol {
+    public init() {}
+    public func request(_ request: URLRequest, completion: @escaping CompletionHandler) -> NetworkCancellable {
+        let task = URLSession.shared.dataTask(with: request, completionHandler: completion)
+        task.resume()
         return task
     }
 }
