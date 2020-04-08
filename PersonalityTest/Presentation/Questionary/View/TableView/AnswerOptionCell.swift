@@ -46,7 +46,7 @@ public class AnswerOptionCell: UITableViewCell {
         addSubview(label)
         
         label.snp.makeConstraints { (make) in
-            make.left.equalToSuperview()
+            make.left.equalTo(safeAreaLayoutGuide.snp.left)
                 .offset(AnswerOptionCell.textHorizontalMargin)
             make.top.equalToSuperview().offset(AnswerOptionCell.textVerticalMargin)
         }
@@ -61,7 +61,7 @@ public class AnswerOptionCell: UITableViewCell {
             make.size.equalTo(AnswerOptionCell.checkboxSize)
             make.left.equalTo(label.snp.right)
                 .offset(QuestionTextCell.textHorizontalMargin)
-            make.right.equalToSuperview().offset(-AnswerOptionCell.checkboxRightMargin)
+            make.right.equalTo(safeAreaLayoutGuide.snp.right).offset(-AnswerOptionCell.checkboxRightMargin)
         }
         
         let button = UIButton()

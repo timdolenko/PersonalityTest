@@ -34,9 +34,9 @@ public class QuestionTextCell: UITableViewCell {
         addSubview(label)
         
         label.snp.makeConstraints { (make) in
-            make.left.equalToSuperview()
+            make.left.equalTo(safeAreaLayoutGuide.snp.left)
                 .offset(QuestionTextCell.textHorizontalMargin)
-            make.right.equalToSuperview()
+            make.right.equalTo(safeAreaLayoutGuide.snp.right)
                 .offset(-QuestionTextCell.textHorizontalMargin)
             make.top.equalToSuperview().offset(QuestionTextCell.textVerticalMargin)
         }

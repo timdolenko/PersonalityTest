@@ -104,16 +104,16 @@ extension AnswerRangeCell: UIPickerViewDelegate, UIPickerViewDataSource {
         range.to - range.from + 1
     }
     
-    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        String(convertIndex(row))
-    }
-    
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let from = convertIndex(pickerView.selectedRow(inComponent: Component.from.rawValue))
         let to = convertIndex(pickerView.selectedRow(inComponent: Component.to.rawValue))
         let range = AnswerDescription.NumberRange(from: from, to: to)
         
         didChangeValue?(range)
+    }
+    
+    public func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        NSAttributedString(string: String(convertIndex(row)), attributes: [.foregroundColor:UIColor.white])
     }
 }
 
