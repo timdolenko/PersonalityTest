@@ -179,8 +179,16 @@ public class QuestionaryViewModel {
             return .didFailToSaveResults(error)
             
         case let .didSelectAnswer(question, answer):
-            answers[question] = answer
-            return .didSelectAnswer(question, answer)
+            
+            let verificationResult = question.answerDescription.verifyAnswer(answer)
+            
+            switch verificationResult {
+            case let .success(answer):
+                answers[question] = answer
+                return .didSelectAnswer(question, answer)
+            case .failure:
+                return .didDisplay(question)
+            }
             
         case let .didFailToLoadQuestions(error):
             return .didFailToLoadQuestions(error)

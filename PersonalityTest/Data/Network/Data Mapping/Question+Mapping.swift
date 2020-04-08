@@ -41,7 +41,7 @@ extension QuestionsResponseDTO.QuestionDTO.QuestionTypeDTO {
         case numberRange = "number_range"
     }
     
-    struct NumberRangeDTO: Decodable {
+    struct NumberRangeDTO: Encodable, Decodable {
         let from: Int
         let to: Int
     }

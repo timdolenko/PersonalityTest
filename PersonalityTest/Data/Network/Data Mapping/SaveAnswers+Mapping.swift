@@ -17,6 +17,7 @@ extension SaveAnswersRequestDTO {
         let category: String
         let option: String?
         let number: Int?
+        let range: QuestionsResponseDTO.QuestionDTO.QuestionTypeDTO.NumberRangeDTO?
     }
 }
 
@@ -26,11 +27,23 @@ extension SaveAnswersRequestDTO.AnswerDTO {
         category = domainQuestion.category
         option = domainAnswer.option
         number = domainAnswer.number
+        range = QuestionsResponseDTO
+            .QuestionDTO
+            .QuestionTypeDTO
+            .NumberRangeDTO(numberRange: domainAnswer.range)
     }
 }
 
 extension SaveAnswersRequestDTO {
     init(answers: [Question:Answer]) {
         self.answers = answers.map { AnswerDTO(domainQuestion: $0.key, domainAnswer: $0.value) }
+    }
+}
+
+extension QuestionsResponseDTO.QuestionDTO.QuestionTypeDTO.NumberRangeDTO {
+    init?(numberRange: AnswerDescription.NumberRange?) {
+        guard let range = numberRange else { return nil }
+        from = range.from
+        to = range.to
     }
 }

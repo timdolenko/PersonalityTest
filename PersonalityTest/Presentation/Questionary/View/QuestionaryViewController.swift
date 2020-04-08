@@ -19,6 +19,9 @@ class QuestionaryViewController: UIViewController {
     weak var coordinator: QuestionaryCoordinator?
     private var viewModel: QuestionaryViewModel!
     private var observationToken: ObservationToken?
+    private var state: QuestionaryViewModel.State {
+        viewModel.state.value
+    }
     
     private enum Section: Int, CaseIterable {
         case question
@@ -90,11 +93,12 @@ class QuestionaryViewController: UIViewController {
         
         tableView.register(QuestionTextCell.self)
         tableView.register(AnswerOptionCell.self)
+        tableView.register(AnswerSliderCell.self)
         tableView.register(AnswerRangeCell.self)
     }
     
     private func updateNextButtonState() {
-        nextButton.isEnabled = viewModel.state.value.answer != nil
+        nextButton.isEnabled = state.answer != nil
         let _ = UIViewPropertyAnimator(duration: 0.25, dampingRatio: 1.0) { [weak self] in
             guard let `self` = self else { return }
             self.nextButton.alpha = self.nextButton.isEnabled ? 1 : 0.5
@@ -123,7 +127,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         
-        guard let question = viewModel.state.value.question else { return 0 }
+        guard let question = state.question else { return 0 }
         
         switch section {
         case .question:
@@ -142,7 +146,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         
-        guard let question = viewModel.state.value.question else { return UITableViewCell() }
+        guard let question = state.question else { return UITableViewCell() }
         
         switch section {
         case .question:
@@ -175,10 +179,11 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
                 
                 let cell = tableView.dequeue(AnswerRangeCell.self, at: indexPath)
                 
-                cell.configure(with: AnswerRangeCell.RangeValue(current: selectedValue(), from: range.from, to: range.to))
+                cell.configure(with: range)
+                cell.setRange(selectedRange: selectedRange())
                 
                 cell.didChangeValue = { [weak self] value in
-                    self?.viewModel.send(.didSelectAnswer(question, .number(value)))
+                    self?.viewModel.send(.didSelectAnswer(question, .range(value)))
                 }
                 
                 return cell
@@ -189,7 +194,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let section = Section(rawValue: indexPath.section) else { return 0 }
         
-        guard let question = viewModel.state.value.question else { return 0 }
+        guard let question = state.question else { return 0 }
         
         switch section {
         case .question:
@@ -231,7 +236,7 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
     
     func sectionMargin(for section: Int) -> CGFloat {
         guard let section = Section(rawValue: section) else { return 0 }
-        guard let _ = viewModel.state.value.question else { return 0 }
+        guard let _ = state.question else { return 0 }
         
         switch section {
         case .question:
@@ -264,24 +269,13 @@ extension QuestionaryViewController: UITableViewDelegate, UITableViewDataSource 
 extension QuestionaryViewController {
     
     func isOptionSelected(_ option: String) -> Bool {
-        guard case let .didSelectAnswer(_, answer) = viewModel.state.value else { return false }
+        guard case let .didSelectAnswer(_, answer) = state else { return false }
         guard case let .option(text) = answer else { return false }
         return text == option
     }
     
-    func selectedValue() -> Int {
-        
-        switch viewModel.state.value {
-        case let .didDisplay(question):
-            
-            return question.answerDescription.type.range?.from ?? 0
-        case let .didSelectAnswer(question, answer):
-            let range = question.answerDescription.type.range
-            
-            return answer.number ?? range?.from ?? 0
-        default:
-            return 0
-        }
+    func selectedRange() -> AnswerDescription.NumberRange? {
+        state.answer?.range ?? state.question?.answerDescription.type.range
     }
 }
 

@@ -15,20 +15,7 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkbox_checked" translatesAutoresizingMaskIntoConstraints="NO" id="CE6-zg-rjK">
-                                <rect key="frame" x="175" y="416" width="64" height="64"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="NhU-dg-0Ij"/>
-                                    <constraint firstAttribute="width" constant="64" id="cEu-zk-IdH"/>
-                                </constraints>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="CE6-zg-rjK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="hCS-XX-wZj"/>
-                            <constraint firstItem="CE6-zg-rjK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="vMM-P3-NXz"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
@@ -37,7 +24,4 @@
             <point key="canvasLocation" x="52.173913043478265" y="375"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="checkbox_checked" width="36" height="36"/>
-    </resources>
 </document>
