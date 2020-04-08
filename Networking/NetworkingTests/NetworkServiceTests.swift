@@ -28,6 +28,26 @@ class NetworkServiceTests: XCTestCase {
     
     func test_whenMockDataPassed_shouldReturnProperResponse() {
         let config = NetworkConfigurableMock()
+        let expectation = self.expectation(description: "Should return correct data")
+        
+        let expectedResponseData = "Data".data(using: .utf8)!
+        
+        let mock = NetworkSessionManagerMock(response: nil, data: expectedResponseData, error: nil)
+        
+        let sut = NetworkService(config: config, sessionManager: mock)
+        
+        _ = sut.request(endpoint: EndpointMock(path: "/mockPath", method: .get), completion: { (result) in
+            
+            switch result {
+            case let .success(data):
+                XCTAssertEqual(data, expectedResponseData)
+                expectation.fulfill()
+            case .failure:
+                XCTFail("Should return proper response")
+            }
+        })
+        
+        wait(for: [expectation], timeout: 0.1)
     }
 
     override func setUpWithError() throws {

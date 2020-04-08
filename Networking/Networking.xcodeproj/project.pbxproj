@@ -15,6 +15,7 @@
 		3C507C2D243DDE700026D484 /* NetworkConfigurable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C507C29243DDE700026D484 /* NetworkConfigurable.swift */; };
 		3C507C49243E031C0026D484 /* NetworkServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C507C48243E031C0026D484 /* NetworkServiceTests.swift */; };
 		3C507C4B243E04540026D484 /* NetworkConfigMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C507C4A243E04540026D484 /* NetworkConfigMock.swift */; };
+		3C507C4D243E06180026D484 /* NetworkSessionManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C507C4C243E06180026D484 /* NetworkSessionManagerMock.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		3C507C29243DDE700026D484 /* NetworkConfigurable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkConfigurable.swift; sourceTree = "<group>"; };
 		3C507C48243E031C0026D484 /* NetworkServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceTests.swift; sourceTree = "<group>"; };
 		3C507C4A243E04540026D484 /* NetworkConfigMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConfigMock.swift; sourceTree = "<group>"; };
+		3C507C4C243E06180026D484 /* NetworkSessionManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSessionManagerMock.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 				3C507C48243E031C0026D484 /* NetworkServiceTests.swift */,
 				3C507C14243DDE420026D484 /* Info.plist */,
 				3C507C4A243E04540026D484 /* NetworkConfigMock.swift */,
+				3C507C4C243E06180026D484 /* NetworkSessionManagerMock.swift */,
 			);
 			path = NetworkingTests;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 			files = (
 				3C507C4B243E04540026D484 /* NetworkConfigMock.swift in Sources */,
 				3C507C49243E031C0026D484 /* NetworkServiceTests.swift in Sources */,
+				3C507C4D243E06180026D484 /* NetworkSessionManagerMock.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

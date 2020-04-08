@@ -68,8 +68,7 @@ extension NetworkService: NetworkServiceProtocol {
             return nil
         }
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, requestError) in
-            
+        return sessionManager.request(request) { (data, response, requestError) in
             if let requestError = requestError {
                 var error: NetworkError
                 if let response = response as? HTTPURLResponse {
@@ -83,9 +82,6 @@ extension NetworkService: NetworkServiceProtocol {
                 completion(.success(data))
             }
         }
-        task.resume()
-        
-        return task
     }
 }
 
