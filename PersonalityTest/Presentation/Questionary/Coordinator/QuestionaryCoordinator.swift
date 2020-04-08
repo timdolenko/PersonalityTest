@@ -25,7 +25,7 @@ class QuestionaryCoordinator: Coordinator {
     
     func start() {
         let controller = dependencies.makeQuestionaryViewController()
-        
+        controller.coordinator = self
         navigationController.pushViewController(controller, animated: false)
     }
 }

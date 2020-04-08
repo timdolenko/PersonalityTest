@@ -23,6 +23,18 @@ public class QuestionaryViewModel {
             guard case let .didSelectAnswer(_,value) = self else { return nil }
             return value
         }
+        
+        public var title: String {
+            switch self {
+            case .initial,
+                 .loadingQuestions:
+                return "Welcome"
+            case .didSaveResults:
+                return "Thank you!"
+            default:
+                return "Personality Test"
+            }
+        }
     }
     
     public enum Event {
@@ -116,7 +128,7 @@ public class QuestionaryViewModel {
         
         insertConditionQuestionIfNeeded()
         
-        currentQuestionIndex += 1
+        currentQuestionIndex += 5
         
         return questionQueue[safe: currentQuestionIndex]
     }

@@ -18,6 +18,8 @@ class QuestionaryViewController: UIViewController {
     
     private var viewModel: QuestionaryViewModel!
     
+    weak var coordinator: QuestionaryCoordinator?
+    
     private var question: Question? {
         switch viewModel.state {
         case let .didDisplay(question):
@@ -60,6 +62,10 @@ class QuestionaryViewController: UIViewController {
             break
         case .loadingQuestions:
             showPopup("Let’s wait for the questions")
+            
+        case let .didFailToLoadQuestions(error):
+            
+            showPopup(with: error)
         case .didDisplay(_):
             hidePopupIfNeeded()
             
@@ -70,9 +76,17 @@ class QuestionaryViewController: UIViewController {
             
             updateNextButtonState()
             tableView.reloadSections(IndexSet(integer: Section.answer.rawValue), with: .none)
-        default:
-            break
+        
+        case .savingResults:
+            showPopup("Saving results")
+        case let .didFailToSaveResults(error):
+            
+            showPopup(with: error)
+        case .didSaveResults:
+            showPopup("We’ve saved your result", icon: #imageLiteral(resourceName: "checkbox_checked.pdf"))
         }
+        
+        updateTitleIfNeeded(viewModel.state.title)
     }
     
     private func configureTableView() {
@@ -93,6 +107,15 @@ class QuestionaryViewController: UIViewController {
             self.nextButton.alpha = self.nextButton.isEnabled ? 1 : 0.5
         }
         .startAnimation()
+    }
+    
+    private func updateTitleIfNeeded(_ title: String) {
+        guard let text = titleLbl.text else { return }
+        guard text != title else { return }
+        UIView.transition(with: titleLbl, duration: 0.5, options: .transitionCrossDissolve, animations: { [weak self] in
+            guard let `self` = self else { return }
+            self.titleLbl.text = title
+        }, completion: nil)
     }
     
     @objc func didTapNextButton(_ sender: UIButton) {
@@ -272,11 +295,36 @@ extension QuestionaryViewController {
 // MARK:  Popup
 extension QuestionaryViewController {
     
-    private func showPopup(_ message: String) {
+    private func showPopup(with error: Error) {
+        showPopup(error.localizedDescription, icon: #imageLiteral(resourceName: "failure_circle.pdf"))
+    }
+    
+    private func showPopup(_ message: String, icon: UIImage? = nil) {
+        guard self.popup == nil else {
+            
+            UIView.transition(with: popup!.label, duration: 0.25, options: .transitionCrossDissolve, animations: { [weak self] in
+                self?.popup?.label.text = message
+            }, completion: nil)
+            
+            if let icon = icon {
+                self.popup?.iconImageView.image = icon
+                self.popup?.activityIndicator.stopAnimating()
+            } else {
+                self.popup?.iconImageView.image = nil
+                self.popup?.activityIndicator.startAnimating()
+            }
+            
+            return
+        }
+        
         let popup = PopupView()
         self.popup = popup
         popup.label.text = message
-        popup.activityIndicator.startAnimating()
+        if let icon = icon {
+            popup.iconImageView.image = icon
+        } else {
+            popup.activityIndicator.startAnimating()
+        }
         popup.alpha = 0
         view.addSubview(popup)
         popup.snp.makeConstraints { (make) in
