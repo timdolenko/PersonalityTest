@@ -112,7 +112,7 @@ extension AnswerRangeCell: UIPickerViewDelegate, UIPickerViewDataSource {
         let from = convertIndex(pickerView.selectedRow(inComponent: Component.from.rawValue))
         let to = convertIndex(pickerView.selectedRow(inComponent: Component.to.rawValue))
         let range = AnswerDescription.NumberRange(from: from, to: to)
-        print("did select \(range) \(range)")
+        
         didChangeValue?(range)
     }
 }
