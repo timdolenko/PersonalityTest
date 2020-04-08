@@ -12,6 +12,7 @@ targets:
     dependencies:
       - framework: Networking.framework
         implicit: true
+    scheme: {}
     sources: 
       - path: PersonalityTest
       - path: Server/public/personality_test.json
@@ -23,8 +24,21 @@ targets:
     platform: iOS
     sources: [PersonalityTestTests]
     type: bundle.unit-test
+    dependencies:
+    - target: PersonalityTest
+    scheme: 
+      testTargets: 
+      - PersonalityTestTests
+      gatherCoverageData: true
+      coverageTargets: 
+      - PersonalityTest
   PersonalityTestUITests:
     platform: iOS
     sources: [PersonalityTestUITests]
     type: bundle.ui-testing
+    dependencies:
+    - target: PersonalityTest
+    scheme: 
+      testTargets: 
+      - PersonalityTestUITests
 

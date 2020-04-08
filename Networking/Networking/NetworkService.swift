@@ -40,7 +40,7 @@ public final class NetworkService {
     private let sessionManager: NetworkSessionManagerProtocol
     
     public init(config: NetworkConfigurable,
-                sessionManager: NetworkSessionManagerProtocol) {
+                sessionManager: NetworkSessionManagerProtocol = NetworkSessionManager()) {
         self.config = config
         self.sessionManager = sessionManager
     }
