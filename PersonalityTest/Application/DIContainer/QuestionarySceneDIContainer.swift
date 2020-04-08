@@ -24,8 +24,12 @@ final class QuestionarySceneDIContainer {
         QuestionsRepository(dataTransferService: dependencies.apiDataTransferService)
     }
     
+    func makeQuestionsInteractor() -> QuestionsInteractor {
+        QuestionsInteractor(repository: makeQuestionsRepository())
+    }
+    
     func makeQuestionaryViewModel() -> QuestionaryViewModel {
-        QuestionaryViewModel(repository: makeQuestionsRepository())
+        QuestionaryViewModel(interactor: makeQuestionsInteractor())
     }
     
     func makeQuestionaryViewController() -> QuestionaryViewController {

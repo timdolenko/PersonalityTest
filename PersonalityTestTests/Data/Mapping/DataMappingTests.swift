@@ -34,10 +34,23 @@ class DataMappingTests: XCTestCase {
     
     func test_whenMappedAnswers_shouldReturnValidJSON() {
         //given
-        let expectedJsonString =
-        """
-        {"answers":[{"range":{"to":18,"from":15},"question":"q1","category":"fun-fact"},{"option":"op1","question":"q1","category":"fact"}]}
-        """
+        let expectedJson = [
+            "answers": [
+                [
+                    "question":"q2",
+                    "category":"fun-fact",
+                    "range": [
+                        "to": 18,
+                        "from": 15
+                    ]
+                ],
+                [
+                    "question":"q1",
+                    "category":"fact",
+                    "option":"op1"
+                ]
+            ]
+        ]
         
         var answers: [Question:Answer] = [:]
         
@@ -46,7 +59,7 @@ class DataMappingTests: XCTestCase {
         
         answers[q1] = a1
         
-        let q2 = Question(title: "q1", category: "fun-fact", answerDescription: .init(type: .numberRange(.init(from: 10, to: 20)), condition: nil))
+        let q2 = Question(title: "q2", category: "fun-fact", answerDescription: .init(type: .numberRange(.init(from: 10, to: 20)), condition: nil))
         let a2 = Answer.range(.init(from: 15, to: 18))
         answers[q2] = a2
         
@@ -58,11 +71,13 @@ class DataMappingTests: XCTestCase {
             return
         }
         
-        let jsonString = String(data: jsonData, encoding: .utf8)!
-        print(jsonString)
+        guard let jsonDict = try? JSONSerialization.jsonObject(with: jsonData) as? [String : Any] else {
+            XCTFail("Should get object from data")
+            return
+        }
         
         //then
-        XCTAssertEqual(jsonString, expectedJsonString)
+        XCTAssertEqual(NSDictionary(dictionary: jsonDict), NSDictionary(dictionary: expectedJson))
     }
 
 }

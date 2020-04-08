@@ -74,10 +74,10 @@ public class QuestionaryViewModel {
     private var questions: [Question]?
     private var categories: [String]?
     
-    private var repository: QuestionsRepositoryProtocol
+    private var interactor: QuestionsInteractorProtocol
     
-    init(repository: QuestionsRepositoryProtocol) {
-        self.repository = repository
+    init(interactor: QuestionsInteractorProtocol) {
+        self.interactor = interactor
     }
     
     func send(_ event: Event) {
@@ -86,7 +86,7 @@ public class QuestionaryViewModel {
     }
     
     private func requestQuestions() {
-        repository.fetchQuestions { [weak self] (result) in
+        interactor.fetchQuestions { [weak self] (result) in
             guard let `self` = self else { return }
             
             switch result {
@@ -99,7 +99,7 @@ public class QuestionaryViewModel {
     }
     
     private func saveAnswers() {
-        repository.saveAnswers(answers: answers) { [weak self] (result) in
+        interactor.saveAnswers(answers: answers) { [weak self] (result) in
             guard let `self` = self else { return }
             
             switch result {

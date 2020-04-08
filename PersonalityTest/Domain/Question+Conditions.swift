@@ -28,6 +28,7 @@ extension AnswerDescription.Condition {
             return false
         }
     }
+    
     public func nextQuestion(for answer: Answer) -> Question? {
         if isFullfilled(with: answer) {
             return ifPositive
