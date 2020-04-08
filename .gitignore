@@ -4,5 +4,3 @@ PersonalityTest.xcodeproj
 /Pods
 # NPM modules
 /Server/node_modules
-# Uploaded answers
-/Server/answers/*
