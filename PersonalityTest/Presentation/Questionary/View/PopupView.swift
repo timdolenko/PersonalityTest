@@ -23,6 +23,8 @@ class PopupView: UIView {
         label.textAlignment = .center
         label.font = .avenirOfSize(14)
         label.textColor = UIColor.white.withAlphaComponent(0.8)
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.5
         addSubview(label)
         
         let indicator = UIActivityIndicatorView(style: .whiteLarge)
@@ -46,7 +48,7 @@ class PopupView: UIView {
         label.snp.makeConstraints { (make) in
             make.left.equalToSuperview()
             make.right.equalToSuperview()
-            make.width.equalTo(200)
+            make.width.equalTo(240)
             make.height.equalTo(60)
             make.top.equalTo(indicator.snp.bottom).offset(8)
             make.bottom.equalToSuperview()
