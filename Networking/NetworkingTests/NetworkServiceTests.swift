@@ -11,21 +11,6 @@ import XCTest
 
 class NetworkServiceTests: XCTestCase {
     
-    private struct EndpointMock: Requestable {
-        var path: String
-        var method: HTTPMethodType
-        var bodyParameters: Encodable?
-        
-        init(path: String, method: HTTPMethodType) {
-            self.path = path
-            self.method = method
-        }
-    }
-    
-    private enum NetworkErrorMock: Error {
-        case someError
-    }
-    
     private var mockConfig = NetworkConfigurableMock()
     private var mockGetValidEndpoint = EndpointMock(path: "/mockPath", method: .get)
     

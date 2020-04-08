@@ -57,7 +57,9 @@ extension DataTransferService: DataTransferServiceProtocol {
                 let result: Result<T, Error> = self.decode(data: data, decoder: endpoint.responseDecoder)
                 DispatchQueue.main.async { completion(result) }
             case let .failure(error):
-                DispatchQueue.main.async { completion(.failure(error)) }
+                DispatchQueue.main.async {
+                    completion(.failure(DataTransferError.networkFailure(error)))
+                }
             }
         }
     }
