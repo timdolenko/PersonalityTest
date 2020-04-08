@@ -1,5 +1,6 @@
 # Use xcodegen instead
 PersonalityTest.xcodeproj
+PersonalityTest.xcworkspace
 # Cocoapods
 /Pods
 # NPM modules
