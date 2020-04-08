@@ -166,6 +166,13 @@ public class QuestionaryViewModel {
             return .loadingQuestions
         case .didLoadQuestions, .didTapNext:
             
+            // Can only tap next if answer is selected
+            if case .didTapNext = event {
+                guard let question = state.question, let _ = answers[question] else {
+                    return state
+                }
+            }
+            
             if let nextQuestion = requestNextQuestion() {
                 return .didDisplay(nextQuestion)
             } else {
