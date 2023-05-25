@@ -40,11 +40,6 @@ If you opt to use a db, please import this data as your starting point, and ensu
 You can use whatever storage you think fits the problem.
 
 
-
-## Setup
-### Setup Xcode workspace using [Xcodegen](https://github.com/yonaskolb/XcodeGen) 
-Run:
-`xcodegen`
 # Setup Server
 Go to Server folder `cd Server`
 ### To install node modules run:

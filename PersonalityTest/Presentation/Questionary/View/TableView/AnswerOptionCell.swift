@@ -1,10 +1,3 @@
-//
-//  AnswerOptionCell.swift
-//  PersonalityTest
-//
-//  Created by Tymofii Dolenko on 04.04.2020.
-//
-
 import UIKit
 import SnapKit
 
@@ -43,7 +36,7 @@ public class AnswerOptionCell: UITableViewCell {
         label.textAlignment = .left
         label.numberOfLines = 0
         
-        addSubview(label)
+        contentView.addSubview(label)
         
         label.snp.makeConstraints { (make) in
             make.left.equalTo(safeAreaLayoutGuide.snp.left)
@@ -54,7 +47,7 @@ public class AnswerOptionCell: UITableViewCell {
         let checkboxImageView = UIImageView()
         checkboxImageView.contentMode = .scaleAspectFit
         checkboxImageView.image = #imageLiteral(resourceName: "checkbox_white_empty.pdf")
-        addSubview(checkboxImageView)
+        contentView.addSubview(checkboxImageView)
         
         checkboxImageView.snp.makeConstraints { (make) in
             make.top.equalToSuperview().offset(7)
@@ -66,7 +59,7 @@ public class AnswerOptionCell: UITableViewCell {
         
         let button = UIButton()
         button.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
-        addSubview(button)
+        contentView.addSubview(button)
         
         button.snp.makeConstraints { (make) in
             make.edges.equalToSuperview().inset(4)
