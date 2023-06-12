@@ -3,30 +3,34 @@
     "hard_fact",
     "lifestyle",
     "introversion",
-    "passion"
+    "extraversion"
   ],
   "questions": [
     {
-      "question": "What is your gender?",
-      "category": "hard_fact",
+      "question": "I am the life of the party.",
+      "category": "extraversion",
       "question_type": {
         "type": "single_choice",
         "options": [
-          "male",
-          "female",
-          "other"
+          "Disagree",
+          "Slightly disagree",
+          "Neutral",
+          "Slightly agree",
+          "Agree"
         ]
       }
     },
     {
-      "question": "How important is the gender of your partner?",
+      "question": "I feel little concern for others.",
       "category": "hard_fact",
       "question_type": {
         "type": "single_choice",
         "options": [
-          "not important",
-          "important",
-          "very important"
+          "Disagree",
+          "Slightly disagree",
+          "Neutral",
+          "Slightly agree",
+          "Agree"
         ]
       }
     },
@@ -59,67 +63,6 @@
             }
           }
         }
-      }
-    },
-    {
-      "question": "Do any children under the age of 18 live with you?",
-      "category": "hard_fact",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "yes",
-          "sometimes",
-          "no"
-        ]
-      }
-    },
-    {
-      "question": "How should your potential partner respond to this question?",
-      "category": "lifestyle",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "yes",
-          "sometimes",
-          "no"
-        ]
-      }
-    },
-    {
-      "question": "Could you imagine having children with your potential partner?",
-      "category": "lifestyle",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "yes",
-          "maybe",
-          "no"
-        ]
-      }
-    },
-    {
-      "question": "How should your potential partner respond to this question?",
-      "category": "lifestyle",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "yes",
-          "maybe",
-          "no"
-        ]
-      }
-    },
-    {
-      "question": "What is your marital status?",
-      "category": "hard_fact",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "never married",
-          "separated",
-          "divorced",
-          "widowed"
-        ]
       }
     },
     {
@@ -189,20 +132,6 @@
       }
     },
     {
-      "question": "What is your ideal living arrangement?",
-      "category": "lifestyle",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "cohabitation",
-          "separate flat / room in the same building",
-          "separate flats in the same area",
-          "weekend-relationship",
-          "long distance relationship"
-        ]
-      }
-    },
-    {
       "question": "Do you enjoy spending time alone?",
       "category": "introversion",
       "question_type": {
@@ -255,105 +184,6 @@
           "sometimes",
           "rarely",
           "not at all"
-        ]
-      }
-    },
-    {
-      "question": "Should one keep little secrets from one's partner?",
-      "category": "introversion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "most of the time",
-          "often",
-          "sometimes",
-          "rarely",
-          "not at all"
-        ]
-      }
-    },
-    {
-      "question": "How often do you think about sex?",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "a few times a day",
-          "daily",
-          "a few times a week",
-          "a few times a month",
-          "rarely"
-        ]
-      }
-    },
-    {
-      "question": "If you were alone on a desert island, how long would you last before pleasuring yourself?",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "less than a day",
-          "one day",
-          "one week",
-          "one month",
-          "I'd never do something like that"
-        ]
-      }
-    },
-    {
-      "question": "How often would you like to have sex with your prospective partner?",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "every day",
-          "a few times a week",
-          "once a week",
-          "every two weeks",
-          "infrequently",
-          "rarely"
-        ]
-      }
-    },
-    {
-      "question": "Do you like trying out new things in bed and experimenting?",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "Yes, definitely!",
-          "Now and then - why not?",
-          "I'd give it a try",
-          "I don't know",
-          "Absolutely not"
-        ]
-      }
-    },
-    {
-      "question": "I can enjoy sex without love",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "always",
-          "often",
-          "sometimes",
-          "rarely",
-          "never"
-        ]
-      }
-    },
-    {
-      "question": "For me, a stable relationship is a prerequisite for really good sex",
-      "category": "passion",
-      "question_type": {
-        "type": "single_choice",
-        "options": [
-          "always",
-          "often",
-          "sometimes",
-          "rarely",
-          "never"
         ]
       }
     }
