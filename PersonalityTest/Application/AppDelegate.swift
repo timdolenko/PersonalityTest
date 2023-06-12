@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  PersonalityTest
-//
-//  Created by Tymofii Dolenko on 04.04.2020.
-//  Copyright © 2020 Tymofii Dolenko. All rights reserved.
-//
-
 import UIKit
 
 @UIApplicationMain

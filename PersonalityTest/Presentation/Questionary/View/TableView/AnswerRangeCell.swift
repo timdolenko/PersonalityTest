@@ -1,10 +1,3 @@
-//
-//  AnswerRangeCell.swift
-//  PersonalityTest
-//
-//  Created by Tymofii Dolenko on 08.04.2020.
-//
-
 import Foundation
 
 import UIKit

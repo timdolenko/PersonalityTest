@@ -1,10 +1,3 @@
-//
-//  Question+Conditions.swift
-//  PersonalityTest
-//
-//  Created by Tymofii Dolenko on 07.04.2020.
-//
-
 import Foundation
 
 extension AnswerDescription.Condition {

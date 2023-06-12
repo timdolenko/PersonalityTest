@@ -1,11 +1,3 @@
-//
-//  AnswerNumberRangeTests.swift
-//  PersonalityTestTests
-//
-//  Created by Tymofii Dolenko on 08.04.2020.
-//
-
-
 import XCTest
 @testable import PersonalityTest
 
